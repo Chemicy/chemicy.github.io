@@ -1,0 +1,900 @@
+<!doctype html><html lang="en"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Chords for Violinists</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+/* Layout: a sticky console (two-octave keyboard + chapter index) on top, a paged lesson below; every demo lights up the same keyboard */
+:root{
+  --bg:#f2f0f7; --surface:#ffffff; --sunk:#e9e5f2; --ink:#221a30; --muted:#655c78; --line:#d6cfe5;
+  --accent:#c8255f; --accent-ink:#ffffff; --teal:#0b857f; --ok:#1e8e4e; --bad:#d03535; --amber:#d9822b;
+  --slip:#fff0b3; --slip-ink:#4a3a10; --ivory:#fdfcf9; --ebony:#231c2e; --on-ivory:#4a4160; --on-ebony:#d9d2ea; --key-line:#bdb5cf; --state-ink:#ffffff;
+  --display:"Fredoka",-apple-system,sans-serif;
+  --body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#16121e; --surface:#211a2c; --sunk:#2c2439; --ink:#ece8f5; --muted:#a79dbb; --line:#3b314b;
+  --accent:#ff6f9f; --accent-ink:#2a0916; --teal:#40cfc3; --ok:#4fd187; --bad:#ff7b72; --amber:#f0a24a;
+  --slip:#3b3219; --slip-ink:#f3e3b0; --ivory:#ece7f2; --ebony:#0f0b16; --on-ivory:#4a4160; --on-ebony:#cfc7e2; --key-line:#8f86a3; --state-ink:#12101a;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#16121e; --surface:#211a2c; --sunk:#2c2439; --ink:#ece8f5; --muted:#a79dbb; --line:#3b314b;
+  --accent:#ff6f9f; --accent-ink:#2a0916; --teal:#40cfc3; --ok:#4fd187; --bad:#ff7b72; --amber:#f0a24a;
+  --slip:#3b3219; --slip-ink:#f3e3b0; --ivory:#ece7f2; --ebony:#0f0b16; --on-ivory:#4a4160; --on-ebony:#cfc7e2; --key-line:#8f86a3; --state-ink:#12101a;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.8}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:780px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+
+/* ---------- console ---------- */
+.deck{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--bg);border-bottom:1px solid var(--line);padding-block:8px 6px}
+@media (max-height:520px){ .deck{position:static} }
+.bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.brand{font-family:var(--display);font-size:1.15rem;line-height:1.2;margin-right:auto;white-space:nowrap}
+.tool{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:.8rem;line-height:1.7}
+.tool[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.kb{position:relative;height:clamp(88px,15vh,124px);background:var(--ebony);border-top:5px solid var(--accent);border-radius:3px 3px 7px 7px;touch-action:none;user-select:none;-webkit-user-select:none}
+.key{position:absolute;top:0;border:0;margin:0;padding:0;font-family:var(--mono);line-height:1.1}
+.key.w{height:100%;background:var(--ivory);color:var(--on-ivory);box-shadow:inset 0 0 0 .5px var(--key-line);border-radius:0 0 5px 5px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:5px;font-size:11px}
+.key.b{height:60%;background:var(--ebony);color:var(--on-ebony);z-index:2;border-radius:0 0 4px 4px;font-size:8px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px}
+.key[data-open]::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--amber);margin-bottom:3px}
+.kb:not(.labels) .key span{visibility:hidden}
+.key.b span{display:none}
+@media (min-width:640px){ .key.b span{display:inline} }
+.key.on{background:var(--accent);color:var(--accent-ink)}
+.key.demo{background:var(--teal);color:var(--state-ink)}
+.key.good{background:var(--ok);color:var(--state-ink)}
+.key.bad{background:var(--bad);color:var(--state-ink)}
+.readout{font-size:.82rem;line-height:1.55;color:var(--slip-ink);background:var(--slip);min-height:3.7em;padding:5px 10px;margin-top:7px;border-radius:2px 10px 10px 10px;box-shadow:2px 2px 0 var(--line)}
+.readout b{font-family:var(--mono)}
+.readout .who{font-family:var(--display);margin-right:6px}
+.readout .nt{font-family:var(--mono);font-weight:700;padding:0 3px;border-radius:4px}
+.readout .nt.now{background:var(--accent);color:var(--accent-ink)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-block:4px 2px;scrollbar-width:thin}
+.chips a{flex:none;text-decoration:none;color:var(--muted);font-size:.82rem;line-height:1.6;padding:2px 10px;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.chips a[aria-current="true"]{color:var(--ink);background:var(--surface);border-color:var(--line);font-weight:700}
+
+/* ---------- lesson ---------- */
+main{padding-block:22px 48px}
+.ch{display:flex;flex-direction:column;gap:14px}
+.ch>*{margin:0;min-width:0}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(1.7rem,6vw,2.4rem);line-height:1.25;text-wrap:balance}
+h2{font-family:var(--display);font-weight:400;font-size:1.35rem;line-height:1.35;margin-top:14px!important;text-wrap:balance}
+h3{font-size:.95rem;margin:0}
+.lead{font-size:1.05rem;color:var(--muted)}
+p b,li b{color:var(--accent)}
+ul,ol{padding-left:1.3em;display:flex;flex-direction:column;gap:4px}
+.num,code{font-family:var(--mono);font-size:.92em;font-variant-numeric:tabular-nums}
+code{background:var(--sunk);padding:1px 5px;border-radius:4px}
+.note{background:var(--sunk);border-radius:10px;padding:12px 14px;font-size:.93rem;line-height:1.75}
+.note>strong:first-child{display:block;font-family:var(--display);font-weight:400;font-size:1.02rem;margin-bottom:2px}
+.note p{margin:0 0 6px}.note p:last-child{margin:0}
+.widget{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.widget>*{margin:0;min-width:0}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn,.row button,.chipset button,.seg button,.opts button{background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:5px 12px;font-size:.9rem;line-height:1.6;text-align:left}
+.row button:hover,.chipset button:hover,.opts button:hover{border-color:var(--teal)}
+button.pri{background:var(--teal);border-color:var(--teal);color:var(--state-ink);font-weight:700}
+button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+button.wrong{opacity:.5;text-decoration:line-through}
+button.right{background:var(--ok);border-color:var(--ok);color:var(--state-ink)}
+canvas{display:block;width:100%;background:var(--sunk);border-radius:10px}
+#labCv{height:210px}#otCv{height:140px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.info{font-size:.92rem;min-height:3.4em}
+.big{font-family:var(--mono);font-weight:700;font-size:1.5rem;line-height:1.2}
+.tblwrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.88rem;line-height:1.5}
+th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+td:last-child{white-space:normal;min-width:11em}
+th{font-size:.78rem;color:var(--muted);font-weight:600}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums}
+td .mini{padding:0 8px;border-radius:8px;background:var(--sunk);border:1px solid var(--line)}
+.hot{color:var(--bad);font-weight:700}.cool{color:var(--ok);font-weight:700}
+.formula{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center;gap:10px 14px;font-family:var(--mono);font-size:1.5rem;padding:8px 0}
+.formula .part{display:flex;flex-direction:column;align-items:center;gap:4px}
+.formula .part small{font-family:var(--body);font-size:.75rem;color:var(--muted);border-top:2px solid var(--line);padding-top:3px;max-width:11em;text-align:center;line-height:1.4}
+.frac{display:inline-flex;flex-direction:column;align-items:center;font-size:.55em;vertical-align:.9em;line-height:1.15}
+.frac span:first-child{border-bottom:1.5px solid currentColor;padding:0 3px}
+.chain{display:flex;flex-wrap:wrap;gap:4px}
+.chain span{font-family:var(--mono);font-size:.82rem;padding:1px 7px;border-radius:6px;background:var(--sunk);color:var(--muted)}
+.chain span.done{background:var(--teal);color:var(--state-ink)}
+.chain span.boom{background:var(--bad);color:var(--state-ink)}
+.chipset{display:flex;flex-wrap:wrap;gap:6px}
+.chipset.roots button{font-family:var(--mono);min-width:2.6em;text-align:center;padding:3px 6px}
+.ex-name{font-family:var(--mono);font-weight:700;font-size:2.2rem;line-height:1.1}
+.ex-name span{color:var(--accent)}
+.recipe{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.85rem}
+.recipe .pill{background:var(--sunk);border-radius:8px;padding:2px 9px;text-align:center;line-height:1.35}
+.recipe .pill b{display:block;font-family:var(--mono);font-size:1.05rem;color:var(--ink)}
+.recipe .arr{color:var(--teal);font-family:var(--mono);font-size:.78rem}
+.anatomy{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.anatomy div{display:flex;flex-direction:column;align-items:center;gap:3px;max-width:9.5em;text-align:center;font-size:.76rem;color:var(--muted);line-height:1.4}
+.anatomy div b{font-family:var(--mono);font-size:2rem;color:var(--ink);line-height:1.1;border-bottom:3px solid var(--accent);padding:0 6px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.prompt{font-size:1.05rem}
+.prompt .big{color:var(--accent)}
+#dFb{min-height:3.6em;font-size:.95rem}
+.pager{display:flex;justify-content:space-between;gap:10px;margin-top:28px}
+.pager a{flex:1;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:.9rem;line-height:1.4;min-width:0}
+.pager a small{display:block;color:var(--muted);font-size:.72rem}
+.pager a:last-child{text-align:right}
+.pager a[hidden]+a{margin-left:auto}
+.credit{text-align:center;font-size:.8rem;font-style:italic;color:var(--muted);margin-top:24px}
+#noaudio{background:var(--bad);color:var(--state-ink);border-radius:8px;padding:6px 10px;font-size:.85rem;margin-bottom:6px}
+@media (prefers-reduced-motion:no-preference){ .key{transition:background .08s} }
+</style>
+
+<header class="deck"><div class="wrap">
+  <div id="noaudio" hidden>🔇 The audio library didn't load, so the page can be seen but not heard. Try refreshing.</div>
+  <div class="bar">
+    <span class="brand">🎻→🎹 Chords for Violinists</span>
+    <button class="tool" id="tLabel" aria-pressed="true">🏷️ Names</button>
+    <button class="tool" id="tLatch" aria-pressed="false" title="When on, keys you tap stay pressed, so you can build chords">📌 Sticky</button>
+    <button class="tool" id="tChord">▶ Play</button>
+    <button class="tool" id="tClear">🧹 Clear</button>
+  </div>
+  <div class="kb labels" id="kb" aria-label="Piano keyboard, G3 to G5"></div>
+  <div class="readout" id="readout" aria-live="polite"></div>
+  <nav class="chips" id="chips" aria-label="Chapters"></nav>
+</div></header>
+
+<main class="wrap">
+
+<!-- ================= Intro ================= -->
+<section class="ch" id="ch-intro">
+  <h1>You play one string at a time. Why learn chords?</h1>
+  <p class="lead">Because you've been playing with them all along. Nobody sent you the memo.</p>
+  <p>A violinist's world is <b>horizontal</b>: one note after another, lined up into a melody. A pianist's world is <b>vertical</b>: one hand comes down and several notes ring at once. A chord is that vertical thing: <b>three or more different notes sounding together</b>. (Two notes make an interval, which is a chord's building block.)</p>
+  <div class="widget">
+    <h3>First, hear the difference. The keys up top light up as they play</h3>
+    <div class="row">
+      <button data-m="60,64,67,72">🎻 Horizontal: one at a time</button>
+      <button class="pri" data-p="60,64,67,72">🎹 Vertical: all at once</button>
+      <button data-a="60,64,67,72">🤹 One by one, then together</button>
+    </div>
+    <p class="info" style="min-height:0">The same four notes. Horizontal is melody, vertical is a chord. That's all there is to it, and music schools can spend four years on it.</p>
+  </div>
+  <p>Claudia is at the keyboard up top. Every ▶ button in this lesson hands me a score: I play it, the keys light up, and the <b>little note</b> under the keyboard tells you exactly how I played it and which notes I used. You just listen.</p>
+  <p>The keyboard covers only two octaves, on purpose: <b>the leftmost key is exactly your open G string</b>, and the four keys with orange dots are your four open strings, G, D, A and E. The whole keyboard is roughly the territory you can reach without shifting position, just laid out flat.</p>
+  <h2>Three chord things you've secretly done already</h2>
+  <ul>
+    <li><b>Tuning</b>. When you bow two open strings together and listen until they hum as one instead of fighting, you're checking a perfect fifth by ear.</li>
+    <li><b>Double stops</b>. Two strings at once is already half a chord. The kind where you crunch three or four strings at once is officially called a chord on the page.</li>
+    <li><b>Arpeggios</b>. After scales come arpeggios, do-mi-sol-do up and down. That's a chord taken apart and played one piece at a time. Your teacher just never told you its real identity.</li>
+  </ul>
+  <div class="note"><strong>📜 Word archaeology: "chord" is a historical typo</strong>
+    <p>In Middle English it was spelled <code>cord</code>, short for <code>accord</code> (agreement, harmony). Accord comes from Latin <code>ad</code> (toward) plus <code>cor</code> (heart): literally, hearts pointing the same way. So a chord originally meant several notes reaching an agreement.</p>
+    <p>Around 1600, educated writers decided cord looked a lot like the Greek <code>chordē</code> (gut string, as in the string of an instrument), and helpfully added an h. And so an agreement between notes ended up spelled exactly like the string on your violin. Strings really were made of twisted sheep gut back then. A pure typo, but a rather romantic one.</p>
+    <p>The Chinese word for chord, 和弦 (héxián), literally means "harmonizing strings." And harmony comes from the Greek <code>harmonia</code>, a carpentry term for a joint: fitting pieces together without a gap.</p>
+  </div>
+  <h2>How this course goes</h2>
+  <p>First we'll visit the lab and watch two of the purest sound waves go on a date, to see why some combinations sound sweet and others clash. Then we'll discover that a chord is already hiding inside a single string. Next we'll watch humanity argue for two thousand years about how to tune instruments. Only then do we get to the actual chord recipes and decode the alphabet soup. At the end there's a dojo where you can practice as much as you like. Nobody's grading.</p>
+</section>
+
+<!-- ================= 440 Lab ================= -->
+<section class="ch" id="ch-sine" hidden>
+  <h1>The 440 Lab: two waves on a blind date</h1>
+  <p>Sound is air shaking. How many times it shakes per second is the <b>frequency</b>, measured in Hz.</p>
+  <div class="note"><strong>🔤 Alphabet soup: Hz</strong>
+    <p>Pronounced hertz. Named after the German physicist Heinrich Hertz, the first person to prove experimentally that electromagnetic waves exist. He died at 36, but tuners all over the world say his name every day.</p></div>
+  <p>Who is <span class="num">440 Hz</span>? It's <b>your open A string</b>, the A the oboe plays for everyone to tune to before a concert. An international conference in London made it the standard pitch in 1939, and in 1955 the ISO (International Organization for Standardization) adopted it as ISO 16. Before that, every place tuned its own way: 415 was common in the Baroque era, some church organs went above 460, and traveling musicians were thoroughly miserable.</p>
+  <p>Real instruments produce messy mixtures of sound, so the lab uses <b>sine waves</b>: the purest possible sound, containing just one frequency. It sounds like the beep from a hearing test.</p>
+  <div class="note"><strong>📜 Word archaeology: sine is a string too</strong>
+    <p>Ancient Indian mathematicians called it <code>jyā</code>, meaning bowstring. Arab scholars transliterated it as <code>jiba</code>, and later Latin translators misread it as a different Arabic word, <code>jaib</code> (a fold of a garment, a bay), and translated that into Latin as <code>sinus</code>. Three hand-offs later, the word still couldn't escape the string. The Chinese term, 正弦 (zhèngxián), happens to keep the character for string.</p></div>
+
+  <div class="widget" id="lab">
+    <h3>🧪 The first wave is fixed at 440 Hz. You choose the second</h3>
+    <canvas id="labCv" role="img" aria-label="Two sine waves and their sum"></canvas>
+    <div><span class="big" id="labF">880.00 Hz</span></div>
+    <p class="info" id="labInfo"></p>
+    <label for="labSl" style="font-size:.85rem;color:var(--muted)">Drag me: frequency of the second wave (200 to 900 Hz)</label>
+    <input type="range" id="labSl" min="200" max="900" step="0.5" value="880">
+    <div class="row">
+      <button data-lab="a">▶ Just 440</button>
+      <button data-lab="b">▶ Just the second wave</button>
+      <button data-lab="ab" class="pri">▶ Both together</button>
+      <button id="labHold" aria-pressed="false">♾️ Keep playing while I drag</button>
+    </div>
+    <h3>🍬 Sweet: simple whole-number ratios</h3>
+    <div class="row" id="labSweet"></div>
+    <h3>🌶️ Spicy: not-so-simple ratios</h3>
+    <div class="row" id="labSpicy"></div>
+  </div>
+
+  <h2>Why do doubling and halving blend so well?</h2>
+  <p>Every time 880 shakes twice, 440 shakes exactly once, so every cycle lines up perfectly. They line up so well that your brain can't be bothered to treat them as two notes and simply reports one note, just brighter. Halving to 220 works the same way, just darker.</p>
+  <p>This is <b>consonant to the point of boring</b>: no friction at all, so no drama. When men and women sing the same line together, they're a factor of two apart in frequency, yet everyone says they're singing the same note. To human ears, two notes a factor of two apart are the same character in a different outfit, which is why they share a name: both are called A.</p>
+  <div class="note"><strong>📜 Word archaeology: octave</strong>
+    <p>Latin <code>octavus</code>, eighth. Count from do up to the high do: do re mi fa sol la si do, 8 notes including both ends. Notice that the ancients counted the starting point too; they had no concept of starting from zero. This fencepost way of counting will trip you up again later, so hold a grudge against it now.</p></div>
+
+  <h2>Why do some combinations clash? Two kinds of noise</h2>
+  <ul>
+    <li><b>Beats</b>. When two frequencies differ by just a little, they push together for a moment and then fight each other, so the volume swells and fades: wah, wah, wah. The number of wahs per second is exactly the difference between the two frequencies. <b>This is what you listen for when you tune</b>: the wahs get slower and slower, then disappear, and you're in tune.</li>
+    <li><b>Roughness</b>. Once the difference goes past twenty or thirty hertz, the wahs come too fast to count and blur into a chainsaw-like buzz. The cause is inside your cochlea: the two frequencies are so close that they tug on the same small patch of sensory cells, and those cells can't tell which one to listen to.</li>
+  </ul>
+  <p>The person who wrote all this down was the 19th-century German polymath Hermann von Helmholtz, in his 1863 book <i>On the Sensations of Tone</i>. Along the way he also invented the ophthalmoscope. He was the kind of colleague who kept other scientists up at night.</p>
+
+  <h2>Here's the pattern</h2>
+  <p>The simpler the ratio between two frequencies (2:1, 3:2, 4:3, 5:4), the more often the waves realign, and the more harmonious they sound. The messier the ratio, the longer they take to realign, and the more awkward they sound. This is <b>first principle number one</b> of chords: pleasant-sounding notes played together have frequencies in simple whole-number ratios.</p>
+  <div class="note"><strong>⚠️ An honest confession from the lab</strong>
+    <p>Pure sine waves are too clean. A combination like the tritone, whose ratio is far from any simple fraction but whose two frequencies are fairly far apart, actually sounds only odd, not harsh. Every note on a real instrument comes with its own string of overtones (next chapter), and it's the overtones beating against each other that make things truly harsh. Don't believe it? Listen again with the piano sound:</p>
+    <div class="row" style="margin-top:6px">
+      <button data-p="57,69">🎹 Octave A3 + A4</button>
+      <button data-p="62,69">🎹 Perfect fifth D4 + A4</button>
+      <button data-p="69,70">🎹 Minor second A4 + B♭4</button>
+      <button data-p="69,75">🎹 Tritone A4 + E♭5</button>
+    </div></div>
+</section>
+
+<!-- ================= Overtones ================= -->
+<section class="ch" id="ch-overtone" hidden>
+  <h1>A chord has been living inside one string all along</h1>
+  <p>When you play your open G string, do you think all that comes out is <span class="num">196 Hz</span>? Strings are greedy: while the whole string vibrates, it also splits into 2, 3, 4 segments that each vibrate on their own, all at the same time. These extra vibrations are called <b>overtones</b>, and their frequencies are exactly 2, 3, 4, 5 times the lowest note (the fundamental), and so on up the line.</p>
+  <p>You've met them. The natural harmonics you play by lightly touching the string at 1/2, 1/3 or 1/4 of its length are just one of these overtones invited out to sing solo.</p>
+  <div class="widget" id="ot">
+    <h3>🎻 This is your G string. Tap a number to bring out that overtone on its own</h3>
+    <canvas id="otCv" role="img" aria-label="Standing waves on a string"></canvas>
+    <div class="row" id="otBtns"></div>
+    <p class="info" id="otInfo">Tap a number above. 👆 marks where you'd lightly touch the string.</p>
+    <div class="row">
+      <button data-ot="all">🎻 All eight together (sounds like a real string)</button>
+      <button data-ot="456" class="pri">✨ Keep only #4, #5 and #6</button>
+      <button data-ot="low">⬇️ Drop an octave: 392 : 490 : 588</button>
+      <button data-p="67,71,74">🎹 G, B, D on the piano</button>
+    </div>
+  </div>
+  <p>Overtones #4, #5 and #6 are G, B and D, in the ratio <span class="num">4:5:6</span>. Pull them out and play them on their own, and you get a <b>G major chord</b>.</p>
+  <p>This is <b>first principle number two</b> of chords, and the most important one: the major chord wasn't invented by anyone. It was copied from the inner structure of a single note. Take what's already inside one string, spread it out across a few separate notes, and you get a chord. It sounds stable and natural because your ears respond: isn't this just one note, viewed under a magnifying glass?</p>
+  <div class="note"><strong>🔤 Alphabet soup and word origins</strong>
+    <p><b>Fundamental</b>: Latin <code>fundamentum</code>, foundation. <b>Overtone</b>: translated from Helmholtz's German <code>Oberton</code> (upper tone). <b>Harmonic</b>: also means overtone, and shares a root with harmony, that carpentry joint. The three words get used interchangeably, so don't panic.</p>
+    <p><b>Monochord</b>: <code>mono</code> (one) plus <code>chord</code> (string). A wooden box with a single string stretched over it and a movable bridge. Legend says Pythagoras used it to measure the ratios 2:1, 3:2 and 4:3. One-string players studying chords? You have a patron saint.</p></div>
+  <div class="note"><strong>🎻 A bonus just for violinists</strong>
+    <p>The B of overtone #5 is about 14 cents lower than the piano's B (cents are explained in the next chapter). Overtone #7 is even stranger: about 31 cents below the nearest F on the piano. The piano doesn't have this note at all, though blues musicians love it. Remember this oddity, because it's the spark that started the two-thousand-year dispute in the next chapter.</p></div>
+</section>
+
+<!-- ================= Equal temperament ================= -->
+<section class="ch" id="ch-tet" hidden>
+  <h1>Equal temperament: a two-thousand-year fight over slicing the cake</h1>
+  <p>If simple fractions sound best, why not tune every note on an instrument to simple fractions and call it a day?</p>
+  <p>The Pythagoreans actually tried: stack the best-sounding interval, the perfect fifth (multiply by 1.5), again and again, and whenever it goes past the octave, divide by 2 to fold it back. Ancient China's method of "adding and subtracting a third" (三分损益) followed the same idea. Try stacking them yourself and see what happens:</p>
+  <div class="widget" id="fifths">
+    <h3>🥞 Starting from A 440, stack perfect fifths</h3>
+    <div class="chain" id="fChain"></div>
+    <p class="info" id="fInfo"></p>
+    <div class="row">
+      <button class="pri" id="fAdd">➕ Stack another perfect fifth (×1.5)</button>
+      <button id="fCmp">🔊 Stacked note vs. piano note</button>
+      <button id="fReset">↩️ Start over</button>
+    </div>
+  </div>
+  <p>After 12 stacks, you've visited all 12 note names and should be back at A. Instead you end up noticeably higher than the real A. The reason is simple: 1.5 to the 12th power is about 129.75, while 7 octaves is 2 to the 7th power, which is 128. <b>Powers of 3 and powers of 2 can never be equal</b>, so the books never balance. That little leftover is called the Pythagorean comma.</p>
+  <div class="note"><strong>📜 Word archaeology: comma</strong>
+    <p>In music, the leftover is called a comma, the same word as the punctuation mark. Greek <code>komma</code>, a little piece cut off. A comma is a small piece cut out of a sentence; a musical comma is a small piece left over from the octave.</p></div>
+  <p>The consequences were very real. Keyboard notes are fixed, so if you tuned one in C to sound perfectly pure, switching to another key meant hitting a horribly sour fifth. People called it the wolf fifth, because it howled like a wolf. Over the centuries, dozens of patch-up tuning systems were invented, each one robbing Peter to pay Paul.</p>
+
+  <h2>The final solution: nobody gets to be pure, and everyone shares the error</h2>
+  <p>Cut one octave (×2) into <b>12 equal steps</b>, where each step up multiplies by the same number. Twelve steps have to double the frequency exactly, so that number multiplied by itself 12 times must equal 2:</p>
+  <div class="widget">
+    <div class="formula">
+      <span class="part"><span>f</span><small>🎯 the frequency of the note you want</small></span>
+      <span>=</span>
+      <span class="part"><span>440</span><small>📌 starting point: A4, your open A string</small></span>
+      <span>×</span>
+      <span class="part"><span>2<span class="frac"><span>n</span><span>12</span></span></span><small>🪜 climb n semitones. Each step multiplies by about 1.0595; twelve steps multiply by exactly 2</small></span>
+    </div>
+    <p class="info" style="min-height:0">To go down, make n negative. For example, your open E string is 7 semitones above A: 440 × 2 to the 7/12 power, about 659.26 Hz. A pure fifth would be 440 × 1.5 = 660. The 0.74 Hz difference is your share of the error.</p>
+  </div>
+  <p>Why exactly 12 steps? Because 2 to the 7/12 power is about 1.4983, touchingly close to the pure fifth's 1.5. People have also experimented with 5, 7, 19, 31 and 53 steps, but 12 is the best value for money across three things: enough notes, accurate enough fifths, and a keyboard you can actually build.</p>
+  <div class="note"><strong>🔤 Alphabet soup</strong>
+    <p><b>12-TET</b>: Twelve-Tone Equal Temperament. <b>12-EDO</b>: Equal Division of the Octave, another name for the same thing.</p>
+    <p><b>Temperament</b>: Latin <code>temperare</code>, to mix, to blend evenly. A relative of temper and tempera (egg paint). The idea is to water down the pure intervals and blend them evenly.</p>
+    <p><b>Semitone</b>: <code>semi</code> means half; one of the 12 steps. Two steps make a whole tone. <b>Cent</b>: Latin <code>centum</code>, one hundred. Cut a semitone into 100 smaller pieces, and an octave is 1200 cents. The Englishman Alexander Ellis proposed it in 1885 specifically to measure these tiny differences. Most people start noticing something is off at around 5 to 10 cents; string players are more sensitive.</p></div>
+
+  <h2>The shared bill: who loses the most?</h2>
+  <div class="tblwrap"><table id="tetTbl"></table></div>
+  <p>Fifths and fourths barely lose anything, just 2 cents. <b>Thirds and sixths take the biggest hit</b>, off by more than ten cents. Check with your ears:</p>
+  <div class="row">
+    <button data-s="440,660">🍯 Pure fifth 440 + 660</button>
+    <button data-s="440,659.26">🎹 Equal-tempered fifth 440 + 659.26</button>
+    <button data-s="440,550">🍯 Pure major third 440 + 550</button>
+    <button data-s="440,554.37">🎹 Equal-tempered major third 440 + 554.37</button>
+  </div>
+  <p>The pure major third is as calm as a lake. The equal-tempered one trembles slightly, more than ten times a second. Every piano in the world trembles like this, and after more than a century of listening, we've all gotten used to it.</p>
+
+  <div class="note"><strong>🕰️ History gossip</strong>
+    <p><b>Zhu Zaiyu</b> (朱载堉), heir to the Prince of Zheng in Ming-dynasty China, published an exact method for twelve-tone equal temperament around 1584. Using an extra-large abacus with 81 rods, he calculated the 12th root of 2 to 24 decimal places. He later petitioned the emperor seven times to give his inherited title to someone else so he could focus on research: a scientist held back by nobility.</p>
+    <p>At almost the same time, the Dutch engineer <b>Simon Stevin</b> (the man who popularized decimal fractions) worked it out independently, but his manuscript wasn't published then. Neither copied the other.</p>
+    <p><b>Bach</b>'s <i>The Well-Tempered Clavier</i> is a famous case of mistranslation in music history. The original title, Das Wohltemperirte Clavier, means a keyboard tuned well. Bach most likely used a tuning that worked in every key but gave each key its own personality, not strict equal division. True equal temperament only took over in the 19th century, along with the industrial production of pianos.</p></div>
+  <div class="note"><strong>🎻 Translation for violinists</strong>
+    <p>Your fingerboard has no frets, so you've been secretly playing in just intonation by ear all along: when you play a major third, you instinctively place it a hair lower so it doesn't tremble. That's a gift, not bad intonation.</p>
+    <p>The price is that when you play with a piano, you have to adjust to it, because it can't move. Also, your four open strings are tuned in pure fifths, each 2 cents wider than the piano's. Counting down from A to G, that adds up to about 4 cents lower than the piano's G. When your teacher asks you to tune your G string up just a little, this chapter is why.</p></div>
+</section>
+
+<!-- ================= Alphabet soup ================= -->
+<section class="ch" id="ch-names" hidden>
+  <h1>Decoding the alphabet soup: who named all these things?</h1>
+  <p>We have our 12 steps. Next, they need official names. Every rule here is a historical leftover, not one of them was designed. So don't look for logic; look for gossip.</p>
+
+  <h2>🎹 Why 7 white keys and 5 black keys?</h2>
+  <p>Twelve notes is a lot, so people usually pick 7 of them as the main cast. That's a scale. The most common pick is the <b>major scale</b>, with step sizes of: whole, whole, half, whole, whole, whole, half.</p>
+  <div class="row">
+    <button class="pri" data-m="60,62,64,65,67,69,71,72">▶ C major: all white keys</button>
+    <button data-m="55,57,59,60,62,64,66,67">▶ G major: one black key</button>
+    <button data-m="55,56,57,58,59,60,61,62,63,64,65,66,67">▶ All 12 semitones</button>
+  </div>
+  <p>The piano was designed by making the 7 notes of C major the white keys and squeezing the other 5 into the gaps as black keys. There's no black key between E and F or between B and C, because those pairs are only a semitone apart already: there's no gap to squeeze one into.</p>
+  <div class="note"><strong>📜 Word archaeology</strong>
+    <p><b>Scale</b>: Latin <code>scala</code>, ladder. Milan's La Scala opera house is literally the Ladder Opera House.</p>
+    <p><b>Diatonic</b>: Greek <code>dia</code> (through) plus <code>tonos</code> (tone), roughly walking through on whole steps. <b>Chromatic</b>: Greek <code>chroma</code>, color. Using all 12 notes is like giving the scale color. The Chrome browser shares the same root.</p></div>
+
+  <h2>🔠 Letter names: C D E F G A B</h2>
+  <p>Naming notes with letters is a medieval habit. In the theory system of the time, the lowest note was labeled A, then B, C, D going up. Centuries later, the major scale became the star, and the major scale with no sharps or flats happens to start on C. So here we are: the alphabet starts at A, but music lessons start at C. A got demoted to sixth place simply because times changed.</p>
+  <p>The number after the letter is the octave number: <span class="num">C4</span> is the C in the very middle of the piano (middle C), and <span class="num">A4</span> is 440, your open A string. The number goes up by one at every C, so the note right above B3 is C4.</p>
+
+  <h2>🎤 Solfège: do re mi fa sol la si</h2>
+  <p>Around the year 1000, an Italian monk named <b>Guido</b>, fed up with his choir's memory, noticed that in a hymn to Saint John, each line started one step higher than the line before. So he took the first syllable of each line as the note's name: <code>Ut</code> queant laxis, <code>Re</code>sonare fibris, <code>Mi</code>ra gestorum, <code>Fa</code>muli tuorum, <code>Sol</code>ve polluti, <code>La</code>bii reatum.</p>
+  <ul>
+    <li><b>Ut became Do</b>: in the 17th century, the Italian Giovanni Battista Doni found Ut hard to sing and swapped it for Do. Some say it comes from Dominus (Lord); others say it's the first two letters of his own surname. He has never been cleared of the self-promotion charge. The French still use Ut today.</li>
+    <li><b>Si</b>: the initials of Sancte Iohannes (Saint John) in the hymn's last line, added later as the seventh syllable.</li>
+    <li><b>Si became Ti</b>: in the 19th century, the English music teacher Sarah Glover changed Si to Ti so that every syllable would start with a different letter (Sol already had S). That's why <i>The Sound of Music</i> sings Ti.</li>
+  </ul>
+
+  <h2>♯ ♭ ♮: all three symbols came from the letter b</h2>
+  <p>In medieval music, the note B came in a higher and a lower version. The lower one was written as a round-bellied b, the soft b; the higher one as an angular square b, the hard b.</p>
+  <ul>
+    <li>The round b gradually turned into <b>♭</b> (flat: down a semitone).</li>
+    <li>The square b turned into <b>♮</b> (natural) and <b>♯</b> (sharp: up a semitone).</li>
+    <li>The square b looked so much like an h that German printers just printed H. So in Germany, H is our B, and B is our B flat. That's how Bach could write a melody from his own name: B, A, C, H.</li>
+    <li>The German words for major and minor, Dur and Moll, also come from hard b (durum) and soft b (molle).</li>
+  </ul>
+  <p>Every black key has two names: a semitone above C is C♯, a semitone below D is D♭, and on the piano they're the same key.</p>
+
+  <h2>📏 Intervals: the distance between two notes, and that fencepost count</h2>
+  <p>An interval's number counts <b>how many letter names it spans, including both ends</b>. C to E: count C, D, E, that's three, so it's a third. C to G is five, a fifth. This is the fencepost counting we held a grudge against earlier, and it causes music's most famous math accident: <b>a third plus a third equals a fifth</b> (C to E, then E to G: the E gets counted twice).</p>
+  <p>The number alone isn't precise enough, because spanning the same three letter names can mean different sizes: C to E is 4 semitones, but D to F is only 3. So it needs a qualifier:</p>
+  <div class="note"><strong>🔤 Alphabet soup: P, M, m, A, d, TT</strong>
+    <p><b>P</b>: Perfect. Reserved for unisons, fourths, fifths and octaves. These are the simple ratios Pythagoras personally approved, so they come in only one official size, with no major or minor.</p>
+    <p><b>M and m</b>: Major and minor, Latin for larger and smaller. Seconds, thirds, sixths and sevenths each come in two sizes, a semitone apart. <b>Capital M is major, lowercase m is minor</b>. This capitalization rule will show up constantly in chord names later.</p>
+    <p><b>A and d</b>: Augmented (Latin augere, to enlarge) and diminished (Latin deminuere, to make smaller). One semitone more than perfect or major is augmented; one semitone less than perfect or minor is diminished.</p>
+    <p><b>TT</b>: Tritone. Exactly 3 whole tones, 6 semitones, splitting the octave right down the middle. Medieval writers nicknamed it the devil in music.</p></div>
+  <div class="tblwrap"><table id="ivTbl"></table></div>
+</section>
+
+<!-- ================= Triads ================= -->
+<section class="ch" id="ch-triads" hidden>
+  <h1>Triads: skip one, take one</h1>
+  <p>The most basic chords have three notes and are called <b>triads</b>. Building one is as simple as a buffet: pick a note on the scale as the foundation, then <b>skip one, take one</b>. Start on C, skip D, take E, skip F, take G. You get C, E, G.</p>
+  <div class="row">
+    <button data-m="60,62,64,65,67">▶ First, walk through C D E F G</button>
+    <button class="pri" data-a="60,64,67">▶ Skip one, take one: C E G</button>
+  </div>
+  <p>Each of the three parts has a job title:</p>
+  <ul>
+    <li><b>Root</b>: the foundation. It decides the chord's name.</li>
+    <li><b>Third</b>: a third above the root. <b>It decides the chord's personality</b>, cheerful or melancholy.</li>
+    <li><b>Fifth</b>: a fifth above the root. It thickens the sound and doesn't have much of a temper of its own.</li>
+  </ul>
+  <p>Remember that G string? The three overtones in the ratio 4:5:6 are exactly the root, third and fifth. With three keys, you're rebuilding the inside of a string.</p>
+
+  <div class="widget explorer" data-set="maj,min,dim,aug,sus2,sus4,p5"></div>
+
+  <h2>Four kinds of triads: two building blocks, stacked four ways</h2>
+  <p>Skip one, take one, and every two neighboring notes you take are a third apart. Thirds come in two sizes: <b>a major third is 4 semitones, a minor third is 3</b>. Stack two blocks in two layers, and there are four ways to do it:</p>
+  <div class="tblwrap"><table>
+    <tr><th>Bottom</th><th>Top</th><th>Name</th><th>Symbol</th><th>Personality in one line</th></tr>
+    <tr><td>Major 3rd, 4</td><td>Minor 3rd, 3</td><td>Major triad</td><td class="n">C</td><td>Sunny, upright, morning exercise broadcast</td></tr>
+    <tr><td>Minor 3rd, 3</td><td>Major 3rd, 4</td><td>Minor triad</td><td class="n">Cm</td><td>Melancholy, rainy day, flashback scene</td></tr>
+    <tr><td>Minor 3rd, 3</td><td>Minor 3rd, 3</td><td>Diminished triad</td><td class="n">Cdim, C°</td><td>Suspense, the silent-film heroine tied to the railroad tracks</td></tr>
+    <tr><td>Major 3rd, 4</td><td>Major 3rd, 4</td><td>Augmented triad</td><td class="n">Caug, C+</td><td>Floating, the camera starts to sway, entering a dream</td></tr>
+  </table></div>
+  <p>Major and minor triads use exactly the same blocks, just with the layers swapped. The major triad's frequency ratio is 4:5:6, straight from the overtone series, which is why it sounds grounded. The minor triad is 10:12:15, with bigger numbers, so the waves line up less often and an indescribable shadow creeps in. The entire difference between major and minor is that middle note, the third, moving by one semitone.</p>
+  <div class="note"><strong>🔤 Alphabet soup and word origins</strong>
+    <p><b>Triad</b>: Greek <code>trias</code>, a group of three. Related to trio and triple.</p>
+    <p><b>Major, minor</b>: refers to whether the third above the root is the large size or the small size. It has nothing to do with volume, pitch or importance. In chord symbols, <b>a bare capital letter means a major triad by default</b>, and a minor triad adds a lowercase m.</p>
+    <p><b>dim</b>: diminished. The fifth is shaved down a semitone. Also written as a small circle °. <b>aug</b>: augmented. The fifth is stretched up a semitone. Also written as a plus sign +.</p>
+    <p><b>sus</b>: suspended. The third has been hung up and replaced by a second (sus2) or a fourth (sus4). With no third, there's no major or minor, so it sounds suspended in midair, waiting to come back down.</p>
+    <p><b>C5</b>: just the root and fifth, not even a third. Rock guitarists call it a power chord. Strictly speaking, two notes don't make a chord, but nobody dares argue with a guitarist who has the distortion on.</p></div>
+</section>
+
+<!-- ================= Sevenths ================= -->
+<section class="ch" id="ch-sevenths" hidden>
+  <h1>Seventh chords: making sense of the alphabet soup</h1>
+  <p>A triad is 1, 3, 5. Keep skipping one and taking one, stack another layer, and you get 1, 3, 5, 7: a <b>seventh chord</b>, named for the new note a seventh above the root. With four notes sounding together, the flavor suddenly goes from plain water to a layered soup.</p>
+  <div class="row">
+    <button data-a="60,64,67">▶ C: plain water</button>
+    <button class="pri" data-a="60,64,67,71">▶ Cmaj7: add milk foam</button>
+    <button data-a="60,64,67,70">▶ C7: add some spice</button>
+  </div>
+  <p>Those chord names on sheet music that look like garbled text are actually a set of assembly rules. Just read them left to right. Let's dissect the scariest one:</p>
+  <div class="widget">
+    <div class="anatomy">
+      <div><b>C</b>🏠 The root. The foundation is C</div>
+      <div><b>m</b>🌧️ The third is a minor third. Without the m, it defaults to major</div>
+      <div><b>7</b>🪜 Stack a seventh on top. A bare 7 means a minor seventh by default</div>
+      <div><b>♭5</b>🔧 A modification: lower the fifth by a semitone</div>
+    </div>
+    <div class="row" style="justify-content:center"><button class="pri" data-a="60,63,66,70">▶ Listen to Cm7♭5</button></div>
+  </div>
+
+  <div class="widget explorer" data-set="maj7,dom7,m7,m7b5,dim7,mM7,six,add9"></div>
+
+  <h2>🗝️ The decoding rules, all of them</h2>
+  <ol>
+    <li><b>The capital letter is the root</b>. A letter on its own means a major triad.</li>
+    <li><b>m, min, minus sign −</b>: lower the third, making it minor.</li>
+    <li><b>The number 7</b>: add a seventh, and by default it's a <b>minor</b> seventh (10 semitones above the root). This is the biggest trap in the whole system.</li>
+    <li><b>maj7, M7, triangle Δ</b>: use a major seventh instead (11 semitones). Note that maj modifies the 7, not the chord itself. So CmM7 means a minor triad with a major seventh.</li>
+    <li><b>dim, °</b>: minor thirds stacked all the way up. <b>ø</b> (a circle with a slash): half-diminished, that is, m7♭5, only diminished halfway. <b>aug, +</b>: raise the fifth a semitone.</li>
+    <li><b>sus2, sus4</b>: the third gets replaced. <b>add9</b>: keep the triad as is and add a ninth. <b>6</b>: add a major sixth.</li>
+    <li><b>9, 11, 13</b>: keep skipping one and taking one on top. After 7, counting to 9 is really the 2 an octave higher, 11 is the 4 an octave higher, and 13 is the 6 an octave higher. That fencepost counting again.</li>
+    <li><b>Slash</b>: <span class="num">C/E</span> reads "C over E," meaning a C chord with E as the lowest note. More on that in the next chapter.</li>
+  </ol>
+  <div class="note"><strong>🕰️ Why does a bare 7 default to a minor seventh?</strong>
+    <p>Because the first seventh chord to become popular, and the one used most, is the one built on the fifth note of a major scale. In C major, that's G, B, D, F, and G up to F is exactly a minor seventh. It showed up so often that it claimed the shortest name, G7. The major seventh chord that came later had to make do with a few extra letters.</p>
+    <p>Its full name is the <b>dominant seventh chord</b>. We'll explain dominant two chapters from now. Fun fact: 4:5:6:7 in the overtone series is very close to a dominant seventh chord. That 7 is the overtone the piano doesn't have, from two chapters ago.</p></div>
+</section>
+
+<!-- ================= Inversions & arpeggios ================= -->
+<section class="ch" id="ch-shape" hidden>
+  <h1>The same chord, many ways to arrange it</h1>
+  <p>C, E and G don't have to have C at the bottom. As long as the members are these three, it doesn't matter who stands at the bottom, who stands on top, how far apart they are, or whether they sound together or take turns: it's still a C chord. A chord is defined by its <b>members</b>, not its formation.</p>
+
+  <h2>🔄 Inversions: someone else stands at the bottom</h2>
+  <div class="row">
+    <button class="pri" data-p="60,64,67">Root position: C at the bottom</button>
+    <button data-p="64,67,72">First inversion: E at the bottom</button>
+    <button data-p="67,72,76">Second inversion: G at the bottom</button>
+    <button data-p="55,60,64">Second inversion, an octave lower</button>
+  </div>
+  <p>Move the lowest note to the top and you've inverted the chord once. Each version tastes slightly different: root position is the most stable, first inversion feels lighter, and second inversion feels like it's hanging and wants to step down. Try turning on 📌 Sticky up top and arranging it yourself. The note under the keyboard will tell you what you've built.</p>
+  <p>This is what the slash from the previous chapter is for: <span class="num">C/E</span> is first inversion, <span class="num">C/G</span> is second inversion. Whatever comes after the slash is the lowest note.</p>
+
+  <h2>📐 Voicing: standing close together or spreading out</h2>
+  <div class="row">
+    <button data-p="60,64,67">Close together: C4 E4 G4</button>
+    <button class="pri" data-p="55,64,72">Spread out: G3 E4 C5</button>
+    <button data-p="55,60,64,67,72,76">Family photo: six notes</button>
+  </div>
+  <p>This is called voicing: arranging each note as if it were a separate voice. The same note can appear several times without changing the chord's identity. When dozens of orchestra players sound a C major chord together, it's still just these three note names.</p>
+
+  <h2>🤹 Broken chords: not sounding together still counts</h2>
+  <div class="row">
+    <button class="pri" data-m="60,64,67,72,67,64,60">Arpeggio: up and back down</button>
+    <button data-m="60,67,64,67,60,67,64,67">Alberti bass: do-sol-mi-sol</button>
+    <button data-m="55,62,71,62,55,62,71,62">Bach style: rocking across strings</button>
+  </div>
+  <p>Play the notes of a chord one at a time and your ears automatically collect them and imagine the complete chord. This is the most counterintuitive thing about chords: <b>a chord can exist across time, not just in a single instant</b>.</p>
+  <div class="note"><strong>📜 Word archaeology</strong>
+    <p><b>Arpeggio</b>: Italian <code>arpeggiare</code>, to play like a harp (arpa). The Chinese term, 琶音, borrows its first character from the pipa, a Chinese lute.</p>
+    <p><b>Inversion</b>: Latin <code>invertere</code>, to turn over.</p>
+    <p><b>Alberti bass</b>: named after the 18th-century Venetian composer Domenico Alberti. His own music is hardly ever performed now, but his name is forever tied to do-sol-mi-sol. That's one way to become immortal.</p></div>
+  <div class="note"><strong>🎻 Translation for violinists: you're the expert at broken chords</strong>
+    <p>Because the bridge is curved, the bow can only press two strings firmly at once. So the three- and four-note chords on a violin are actually rolled: first the lower two strings, then the upper two. Every chord you play has a bit of arpeggio built in.</p>
+    <p>Bach's solo violin works take this trick to the limit: a single line throughout, but it jumps back and forth between registers, and listeners hear a whole building of harmony in their heads. Theory books call it implied harmony. A one-string player can perform the whole drama of chords alone.</p></div>
+</section>
+
+<!-- ================= Progressions ================= -->
+<section class="ch" id="ch-progress" hidden>
+  <h1>Chord progressions: chords need a storyline too</h1>
+  <p>A single chord is just a color. When several chords walk in a line, you get a story. That line is called a <b>chord progression</b>.</p>
+
+  <h2>🏘️ The seven households of C major</h2>
+  <p>Using only the 7 white keys of C major, skip one and take one starting on each note, and you get 7 triads. They're the native residents of this key, called diatonic chords:</p>
+  <div class="row" id="diaRow"></div>
+  <p>Look closely: the same recipe produces major, minor and even diminished chords. That's because the white keys aren't evenly spaced (whole, whole, half, whole, whole, whole, half), so skipping one and taking one naturally lands on thirds of different sizes.</p>
+  <div class="note"><strong>🔤 Alphabet soup: those Roman numerals</strong>
+    <p>A Roman numeral says which note of the scale the chord is built on. <b>Uppercase means a major triad, lowercase means minor, and a small circle means diminished</b>. So I, IV and V are major, ii, iii and vi are minor, and vii° is diminished.</p>
+    <p>Why not just write C, F, G? Because if you change key, all the letters change, but the relationships don't. In C major, I, IV and V are C, F and G; in G major they're G, C and D, and it sounds like the same story. It's just like shifting position on your violin: your hand moves, but the relationships between your fingerings stay the same.</p></div>
+
+  <h2>🧲 Three roles: home, going out, wanting to go home</h2>
+  <ul>
+    <li><b>Tonic</b> (T, represented by I): home. The most restful place to stop. Same root as tone: the note that sets the key.</li>
+    <li><b>Dominant</b> (D, represented by V): <b>desperately wants to go home</b>. Latin <code>dominari</code>, to rule. After the tonic, it's the note with the most say, and the moment it appears, it pulls the music toward home.</li>
+    <li><b>Subdominant</b> (S, represented by IV): going out for a stroll. Sub here means below: the dominant is a fifth above the tonic, and the subdominant is a fifth below it. It doesn't mean a second-rate dominant.</li>
+  </ul>
+  <div class="row">
+    <button class="pri" data-seq="55,59,62,65|60,64,67" data-names="G7 (wants to go home)|C (home)">▶ G7 to C: the strongest pull in music history</button>
+    <button data-seq="55,59,62,65" data-names="G7 (and then you don't get to go home)">▶ Just G7, left hanging</button>
+  </div>
+  <p>Between the B and F in G7 is exactly a tritone, the devil's interval. It's extremely unstable: B wants to climb a semitone to C, F wants to fall a semitone to E, and when they let go, they land right inside a C chord. Several centuries of Western music boil down to playing this game of tension and release over and over.</p>
+
+  <h2>🚂 A few progressions that are worn out but still work</h2>
+  <div class="widget">
+    <p class="big" id="seqNow" style="min-height:1.3em">&nbsp;</p>
+    <div class="row" id="seqRow"></div>
+    <p class="info" id="seqInfo" style="min-height:0">Tap one and watch the keyboard up top change hand shapes.</p>
+  </div>
+
+  <div class="note"><strong>🎻 Your homework</strong>
+    <p>Next time you play a melody, ask yourself: which chord is the accompaniment on right now, and is the note under my finger its root, third or fifth?</p>
+    <p>When you land on the third, you alone decide whether the whole orchestra sounds cheerful or melancholy. One string has more power than you think.</p></div>
+</section>
+
+<!-- ================= Dojo ================= -->
+<section class="ch" id="ch-dojo" hidden>
+  <h1>The dojo: tap away, nobody's grading</h1>
+  <p>Three ways to practice. Tap New question to get one, and you'll find out right away whether you got it. Wrong answers cost nothing and right answers win no certificate, just a streak counter quietly applauding in the corner.</p>
+  <div class="widget" id="dojo">
+    <div class="seg" id="dMode">
+      <button data-mode="ear">🎧 Ear: hear the personality</button>
+      <button data-mode="name">👀 Eye: name the chord on the keys</button>
+      <button data-mode="build">🎹 Hands: build it on the keyboard</button>
+    </div>
+    <div class="seg" id="dPool">
+      <button data-pool="tri">🧱 Triads only</button>
+      <button data-pool="sev">🍜 Add seventh chords</button>
+    </div>
+    <div class="row"><button class="pri" id="dNew">🎲 New question</button><span id="dStreak" class="num"></span></div>
+    <div id="dBody"><p class="prompt">Pick a practice mode, then tap New question.</p></div>
+    <p id="dFb" aria-live="polite"></p>
+  </div>
+  <div class="note"><strong>💡 Listening cheat sheet</strong>
+    <p>Major: stable, bright. Minor: stable, dark. Diminished: twisted, wants to escape. Augmented: floating, doesn't know where it's going. First decide stable or unstable, then bright or dark, and one four-way choice becomes two two-way choices.</p>
+    <p>Seventh chords: maj7 is a lazy coffee shop, 7 is the blues wanting to resolve, m7 is a soft late night, m7♭5 is a thriller scene transition.</p></div>
+</section>
+
+<div class="pager"><a id="prev" href="#intro"></a><a id="next" href="#sine"></a></div>
+<p class="credit">Created by Zhixing Yao with AI assistance, as a self-study and teaching explainer.</p>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<script>
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const LO=55, HI=79;
+const ROOTS=['C','D♭','D','E♭','E','F','F♯','G','A♭','A','B♭','B'];
+const SHARP=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+const freq=m=>440*Math.pow(2,(m-69)/12);
+const noteName=m=>ROOTS[m%12]+(Math.floor(m/12)-1);
+const isBlack=m=>[1,3,6,8,10].includes(m%12);
+const pick=a=>a[Math.floor(Math.random()*a.length)], rnd=n=>Math.floor(Math.random()*n);
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+const CH=[['intro','🎻 Intro'],['sine','🌊 440 Lab'],['overtone','🧬 The chord in a string'],['tet','🔪 Equal temperament'],['names','🔤 Alphabet soup'],['triads','🧱 Triads'],['sevenths','🍜 Seventh chords'],['shape','🔄 Inversions & arpeggios'],['progress','🚂 Progressions'],['dojo','🥋 Dojo']];
+
+/* ---------------- audio ---------------- */
+let piano=null, bus=null, timers=[], sineLive=[];
+async function audio(){
+  if(!window.Tone){ $('#noaudio').hidden=false; return false; }
+  try{ await Tone.start(); }catch(e){}
+  if(!piano){
+    bus=new Tone.Limiter(-2).toDestination();
+    const env={attack:.004,decay:1.5,sustain:.05,release:1};
+    try{ piano=new Tone.PolySynth(Tone.Synth,{oscillator:{partials:[1,.5,.28,.16,.09,.05],type:'custom'},envelope:env}); }
+    catch(e){ piano=new Tone.PolySynth(Tone.Synth,{oscillator:{type:'triangle'},envelope:env}); }
+    piano.volume.value=-11; piano.connect(bus);
+  }
+  return true;
+}
+function hit(ms,dur=1.3,cls='demo'){
+  ms.forEach(m=>piano.triggerAttackRelease(freq(m),dur,undefined,.8));
+  if(cls) ms.forEach(m=>flash(m,cls,dur*700));
+}
+function stopSeq(){ timers.forEach(clearTimeout); timers=[]; }
+/* mode: 'blk' together, 'mel' one by one, 'arp' one by one then together */
+async function play(ms,mode='blk',cls='demo'){
+  if(!await audio()) return; stopSeq();
+  if(cls) slip(ms,mode);
+  if(mode==='blk'){ hit(ms,1.5,cls); if(cls) slipNow(-1); return; }
+  const gap=mode==='mel'&&ms.length>9?170:240;
+  ms.forEach((m,i)=>timers.push(setTimeout(()=>{ hit([m],.7,cls); if(cls) slipNow(i); },i*gap)));
+  if(mode==='arp') timers.push(setTimeout(()=>{ hit(ms,1.6,cls); if(cls) slipNow(-1); },ms.length*gap+120));
+}
+/* Claudia's note: every time the lesson hands over a set of notes, say how they were played and which notes */
+const WHO='<span class="who">🧡 Claudia\'s note</span>';
+function note(html){ $('#readout').innerHTML=WHO+html; }
+function slip(ms,mode,title){
+  const uniq=new Set(ms), n=uniq.size, r=n>=2?recog(uniq):null, isChord=!!r&&r.startsWith('Recognized');
+  let tech,why;
+  if(mode==='blk'){ tech=n===1?'single note':n===2?'double stop':'block chord'; why=n===1?'just one key':n===2?'two notes at once. You call it a double stop; theory books call it a harmonic interval':'several notes pressed together. Theory books call it a block chord'; }
+  else if(mode==='arp'){ tech=n===2?'apart, then together':'arpeggio, then block chord'; why='one at a time from low to high, then all together'; }
+  else { tech=isChord?'broken chord':'one by one'; why=isChord?'the chord members take turns instead of sounding together':'a melodic line, one note after another, nothing stacked'; }
+  const tail=r&&(isChord||n===2||mode!=='mel'&&!r.startsWith('🤔'))?'　'+r:'';
+  note((title?'<b>'+title+'</b>　':'')+'I\'m playing a <b>'+tech+'</b> for you: '+why+'.<br>'+ms.map((m,i)=>'<span class="nt" data-i="'+i+'">'+noteName(m)+'</span>').join(mode==='blk'?' + ':' → ')+tail);
+}
+function slipNow(i){ $$('#readout .nt').forEach(s=>s.classList.toggle('now',i===-1||+s.dataset.i===i)); }
+async function playSeq(list,onStep,beat=950,names){
+  if(!await audio()) return; stopSeq(); clearMarks();
+  list.forEach((ms,i)=>timers.push(setTimeout(()=>{ clearMarks('demo'); ms.forEach(m=>mark(m,'demo')); hit(ms,beat/1000*.95,null); slip(ms,'blk',(names&&names[i]?names[i]+', ':'')+'progression step '+(i+1)+'/'+list.length); slipNow(-1); onStep&&onStep(i); },i*beat)));
+  timers.push(setTimeout(()=>{ clearMarks('demo'); onStep&&onStep(-1); },list.length*beat+500));
+}
+function stopSines(){ sineLive.forEach(n=>{ try{ n.g.gain.cancelScheduledValues(Tone.now()); n.g.gain.rampTo(0,.04); n.os.forEach(o=>o.stop(Tone.now()+.08)); }catch(e){} }); sineLive=[]; }
+async function sines(fs,dur=2.4,amps){
+  if(!await audio()) return; stopSines();
+  note('No piano for this one. I\'m playing <b>pure sine waves</b>'+(fs.length>1?', '+fs.length+' stacked together':', just one')+'.<br><b>'+fs.map(f=>(Math.round(f*100)/100)+' Hz').join(' + ')+'</b>');
+  const t=Tone.now()+.02, g=new Tone.Gain(0).connect(bus);
+  const os=fs.map((f,i)=>{ const o=new Tone.Oscillator(f,'sine'), a=new Tone.Gain((amps?amps[i]:1)*.3/Math.sqrt(fs.length)); o.connect(a); a.connect(g); o.start(t); o.stop(t+dur+.1); return o; });
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(1,t+.05); g.gain.setValueAtTime(1,t+dur-.2); g.gain.linearRampToValueAtTime(0,t+dur);
+  sineLive.push({g,os});
+}
+
+/* ---------------- keyboard ---------------- */
+const keyEl={}, held=new Set(); let latch=false, lastNote=null;
+function buildKb(){
+  const kb=$('#kb'), whites=[]; for(let m=LO;m<=HI;m++) if(!isBlack(m)) whites.push(m);
+  const W=100/whites.length, OPEN={55:'G string',62:'D string',69:'A string',76:'E string'};
+  for(let m=LO;m<=HI;m++){
+    const b=document.createElement('button'); b.className='key '+(isBlack(m)?'b':'w'); b.dataset.m=m; b.tabIndex=-1;
+    b.setAttribute('aria-label',noteName(m)+(OPEN[m]?', violin open '+OPEN[m]:''));
+    if(isBlack(m)){ const i=whites.indexOf(m+1); b.style.left=(i*W-W*.31)+'%'; b.style.width=(W*.62)+'%'; b.innerHTML='<span>'+SHARP[m%12]+'</span>'; }
+    else { const i=whites.indexOf(m); b.style.left=(i*W)+'%'; b.style.width=W+'%'; if(OPEN[m]) b.dataset.open='1'; b.innerHTML='<span>'+ROOTS[m%12]+(m%12===0?Math.floor(m/12)-1:'')+'</span>'; }
+    b.addEventListener('pointerdown',e=>{ e.preventDefault(); press(m); });
+    kb.appendChild(b); keyEl[m]=b;
+  }
+}
+function mark(m,c){ keyEl[m]&&keyEl[m].classList.add(c); }
+function flash(m,c,ms){ const k=keyEl[m]; if(!k) return; k.classList.add(c); setTimeout(()=>k.classList.remove(c),ms); }
+function clearMarks(c){ (c?[c]:['demo','good','bad']).forEach(x=>$$('.key.'+x).forEach(k=>k.classList.remove(x))); }
+function syncHeld(){ for(const m in keyEl) keyEl[m].classList.toggle('on',held.has(+m)); readout(); }
+async function press(m){
+  if(!await audio()) return;
+  lastNote=m; hit([m],1.4,null);
+  if(latch){ held.has(m)?held.delete(m):held.add(m); syncHeld(); heldChanged(m); }
+  else { flash(m,'on',350); readout(); }
+}
+function setLatch(v){ latch=v; $('#tLatch').setAttribute('aria-pressed',v); if(!v){ held.clear(); clearMarks(); } syncHeld(); }
+
+const IV=[[0,'Perfect unison','P1',1,1,'The same note, on repeat'],[1,'Minor 2nd','m2',16,15,'The shark is getting closer'],[2,'Major 2nd','M2',9,8,'Do to re, one step up the stairs'],[3,'Minor 3rd','m3',6,5,'Melancholy, the soul of a minor chord'],[4,'Major 3rd','M3',5,4,'Cheerful, the soul of a major chord'],[5,'Perfect 4th','P4',4,3,'"Here Comes the Bride": dum, dum-da-dum'],[6,'Tritone','TT',45,32,'The devil\'s interval, siren vibes'],[7,'Perfect 5th','P5',3,2,'"Twinkle, twinkle" from the first twinkle to the second, and any two neighboring open strings'],[8,'Minor 6th','m6',8,5,'Bittersweet, a little wronged'],[9,'Major 6th','M6',5,3,'Warm and open'],[10,'Minor 7th','m7',16,9,'A sentence left hanging, bluesy'],[11,'Major 7th','M7',15,8,'One breath short of an octave, piercing yet classy'],[12,'Perfect octave','P8',2,1,'The upgraded version of the same character']];
+
+const Q={
+ maj:{sym:'',lab:'Major',en:'major triad',iv:[0,4,7],deg:[0,2,4],alias:['','M','maj'],mood:'☀️ bright · 🏠 stable · 😊 cheerful',vibe:'Sunny and upright. The original 4:5:6 straight from the overtone series, steady as morning exercises.'},
+ min:{sym:'m',lab:'Minor',en:'minor triad',iv:[0,3,7],deg:[0,2,4],alias:['m','−','min'],mood:'🌧️ melancholy · 🌙 inward · 🍂 nostalgic',vibe:'Melancholy but standing firm. The third is a semitone lower than in major, and the sky clouds over.'},
+ dim:{sym:'dim',lab:'Diminished',en:'diminished triad',iv:[0,3,6],deg:[0,2,4],alias:['dim','°'],mood:'😰 tense · 🕵️ suspense · 🌀 uneasy',vibe:'Twisted and suspenseful. Root to fifth is exactly a tritone, so it comes with its own devil.'},
+ aug:{sym:'aug',lab:'Augmented',en:'augmented triad',iv:[0,4,8],deg:[0,2,4],alias:['aug','+'],mood:'🫧 floaty · 💭 dreamy · ❓ unresolved',vibe:'Floaty and weightless. Its three notes split the octave into three equal parts, so no note sounds like the root, and it can\'t tell where home is.'},
+ sus2:{sym:'sus2',lab:'Sus2',en:'suspended 2nd',iv:[0,2,7],deg:[0,1,4],alias:['sus2'],mood:'🪟 airy · 🌬️ fresh',vibe:'Open and fresh. No third, so it\'s neither major nor minor, like curtains just pulled open.'},
+ sus4:{sym:'sus4',lab:'Sus4',en:'suspended 4th',iv:[0,5,7],deg:[0,3,4],alias:['sus4','sus'],mood:'⏳ expectant · 🎈 hanging',vibe:'Hanging, waiting for that fourth to fall back to the third. Lots of song intros use it to build anticipation.'},
+ p5:{sym:'5',lab:'Power chord',en:'power chord',iv:[0,7],deg:[0,4],alias:['5'],mood:'🎸 tough · 🔥 powerful',vibe:'Just the root and fifth. Hollow and tough, best served with distorted guitar.'},
+ maj7:{sym:'maj7',lab:'Major 7th',en:'major seventh',iv:[0,4,7,11],deg:[0,2,4,6],alias:['maj7','M7','Δ7','Δ'],mood:'☕ lazy · 🌆 urban · ✨ tender',vibe:'Lazy, with milk foam on top. Your ticket into City Pop and coffee-shop playlists.'},
+ dom7:{sym:'7',lab:'Dominant 7th',en:'dominant seventh',iv:[0,4,7,10],deg:[0,2,4,6],alias:['7','dom7'],mood:'🧲 homesick · 🎷 bluesy · ⚡ punchy',vibe:'Punchy and restless. A tritone hides between its third and seventh, so it always wants to rush on to the next chord.'},
+ m7:{sym:'m7',lab:'Minor 7th',en:'minor seventh',iv:[0,3,7,10],deg:[0,2,4,6],alias:['m7','−7','min7'],mood:'🌃 late-night · 🛋️ mellow · 🍷 tipsy',vibe:'Soft and late-night. A minor chord wrapped in a blanket.'},
+ m7b5:{sym:'m7♭5',lab:'Half-diminished 7th',en:'half-diminished seventh',iv:[0,3,6,10],deg:[0,2,4,6],alias:['m7♭5','ø','ø7'],mood:'🕯️ gloomy · 🎬 suspense',vibe:'Gloomy, a thriller scene transition. A diminished triad plus a minor seventh: only half diminished, hence the name.'},
+ dim7:{sym:'dim7',lab:'Diminished 7th',en:'diminished seventh',iv:[0,3,6,9],deg:[0,2,4,6],alias:['dim7','°7'],mood:'🚂 thrilling · 🎭 dramatic',vibe:'The train is about to hit in a silent movie. Four notes split the octave into four equal parts, all minor thirds, with two tritones living inside.'},
+ mM7:{sym:'mM7',lab:'Minor-major 7th',en:'minor-major seventh',iv:[0,3,7,11],deg:[0,2,4,6],alias:['mM7','m(maj7)','−Δ7'],mood:'🕶️ spy-movie · 🖤 icy',vibe:'Spy-movie end credits. A minor triad with a major seventh, dark and sharp.'},
+ six:{sym:'6',lab:'Major 6th',en:'major sixth',iv:[0,4,7,9],deg:[0,2,4,5],alias:['6','M6'],mood:'🎞️ retro · 🍬 sweet',vibe:'Old-school and sweet. The final chord of an old movie.'},
+ add9:{sym:'add9',lab:'Add9',en:'added ninth',iv:[0,4,7,14],deg:[0,2,4,8],alias:['add9','add2'],mood:'🎨 fresh · 🌸 light',vibe:'A major triad with a touch of watercolor. A regular guest in pop piano intros.'}
+};
+const fullName=(r,k)=>ROOTS[r]+' '+Q[k].en;
+const ROLE={0:'root',1:'2nd',2:'3rd',3:'4th',4:'5th',5:'6th',6:'7th',8:'9th'};
+const STEP={1:'half step',2:'whole step',3:'minor 3rd',4:'major 3rd',5:'perfect 4th',7:'perfect 5th'};
+const LET=['C','D','E','F','G','A','B'], LPC=[0,2,4,5,7,9,11];
+function spell(r,semi,deg){
+  const rn=ROOTS[r], li=(LET.indexOf(rn[0])+deg)%7; let d=((r+semi)%12-LPC[li]+12)%12; if(d>6) d-=12;
+  return LET[li]+(d>0?'♯'.repeat(d):'♭'.repeat(-d));
+}
+function chordMidis(r,k){ const base=r>=7?48+r:60+r; return Q[k].iv.map(i=>{ let m=base+i; if(m>HI) m-=12; return m; }); }
+const TPL={}; ['maj','min','dim','aug','dom7','maj7','m7','m7b5','dim7','mM7','six','sus4','sus2','add9'].forEach(k=>{ const key=[...new Set(Q[k].iv.map(i=>i%12))].sort((a,b)=>a-b).join(','); if(!TPL[key]) TPL[key]=k; });
+function recog(set){
+  const s=[...set].sort((a,b)=>a-b), pcs=[...new Set(s.map(m=>m%12))];
+  if(s.length<2) return null;
+  if(pcs.length===1) return 'The same note name in different octaves. As far as chords are concerned, they\'re the same person';
+  if(pcs.length===2){ let d=s[s.length-1]-s[0]; if(d>12) d=d%12; const v=IV[d]; return 'Interval: <b>'+v[1]+'</b> ('+v[2]+', '+d+' semitones). Two notes don\'t make a chord yet'; }
+  const bass=s[0]%12, order=[bass,...pcs.filter(p=>p!==bass)];
+  for(const r of order){ const k=TPL[pcs.map(p=>(p-r+12)%12).sort((a,b)=>a-b).join(',')]; if(k) return 'Recognized: <b>'+ROOTS[r]+Q[k].sym+(r!==bass?'/'+ROOTS[bass]:'')+'</b>'+(r!==bass?', with '+ROOTS[bass]+' as the lowest note (inversion)':', root position')+'<br>🏷️ <b>'+fullName(r,k)+'</b>　'+Q[k].mood; }
+  return '🤔 Not sure. Either you just invented a new chord, or that was a slip of the finger';
+}
+function readout(){
+  const el=$('#readout');
+  if(latch){
+    if(!held.size){ el.innerHTML=WHO+'📌 Sticky keys are on, so it\'s your turn. Keys you tap stay lit. Build a few notes and I\'ll tell you what chord it is.'; return; }
+    const s=[...held].sort((a,b)=>a-b); el.innerHTML=WHO+'🫵 You\'re holding <b>'+s.map(noteName).join(' + ')+'</b><br>'+(recog(held)||'Add a few more and I\'ll recognize it');
+    return;
+  }
+  if(lastNote==null){ el.innerHTML=WHO+'I\'m on the piano bench, ready to go. Every ▶ in the lesson below hands me a score: I play it, and this note tells you how I played it and which notes I used.<br>You can tap the keys yourself too. The orange dots are your four open strings, G, D, A and E.'; return; }
+  const ex={55:'Your open G string, the floor of the violin',62:'Your open D string',69:'Your open A string, the A the whole world tunes to',76:'Your open E string',60:'Middle C, the center of the piano'}[lastNote];
+  el.innerHTML=WHO+'🫵 You played a <b>single note</b>: <b>'+noteName(lastNote)+' · '+freq(lastNote).toFixed(2)+' Hz</b>'+(ex?'<br>'+ex:'');
+}
+
+/* ---------------- chapters ---------------- */
+let cur='intro';
+function show(id){
+  if(!CH.some(c=>c[0]===id)) id='intro'; cur=id;
+  $$('.ch').forEach(s=>s.hidden=s.id!=='ch-'+id);
+  $$('#chips a').forEach(a=>{ const on=a.dataset.id===id; a.setAttribute('aria-current',on); if(on) a.scrollIntoView({block:'nearest',inline:'center'}); });
+  const i=CH.findIndex(c=>c[0]===id), p=$('#prev'), n=$('#next');
+  p.hidden=i===0; n.hidden=i===CH.length-1;
+  if(i>0){ p.href='#'+CH[i-1][0]; p.innerHTML='<small>← Previous</small>'+CH[i-1][1]; }
+  if(i<CH.length-1){ n.href='#'+CH[i+1][0]; n.innerHTML='<small>Next →</small>'+CH[i+1][1]; }
+  stopSeq(); clearMarks(); if(window.Tone&&piano){ stopSines(); labStop(); }
+  window.scrollTo(0,0); lastNote=null; readout();
+  if(id==='sine') drawLab(); if(id==='overtone') drawOt();
+}
+function route(){ show(location.hash.slice(1)||'intro'); }
+
+/* ---------------- canvas helpers ---------------- */
+function fit(c){ const d=window.devicePixelRatio||1, w=c.clientWidth, h=c.clientHeight; if(c.width!==Math.round(w*d)||c.height!==Math.round(h*d)){ c.width=Math.round(w*d); c.height=Math.round(h*d); } const x=c.getContext('2d'); x.setTransform(d,0,0,d,0,0); x.clearRect(0,0,w,h); return {x,w,h}; }
+function band(x,fn,w,yc,amp,win,color){
+  const top=[],bot=[]; for(let i=0;i<=w;i++){ let mn=9,mx=-9; for(let j=0;j<12;j++){ const v=fn((i+j/12)/w*win); if(v<mn) mn=v; if(v>mx) mx=v; } top.push(yc-mx*amp); bot.push(yc-mn*amp); }
+  x.beginPath(); x.moveTo(0,top[0]); for(let i=1;i<=w;i++) x.lineTo(i,top[i]); for(let i=w;i>=0;i--) x.lineTo(i,bot[i]); x.closePath();
+  x.fillStyle=color; x.fill(); x.strokeStyle=color; x.lineWidth=1.4; x.lineJoin='round'; x.stroke();
+}
+
+/* ---------------- 440 lab ---------------- */
+const lab={f2:880,on:false,o1:null,o2:null,g:null};
+const SIMPLE=[]; for(let q=1;q<=6;q++) for(let p=1;p<=12;p++){ const g=(a,b)=>b?g(b,a%b):a; if(g(p,q)===1&&p*q<=30&&p/q>=.45&&p/q<=2.05) SIMPLE.push([p,q]); }
+function describe(){
+  const f2=lab.f2, r=f2/440, d=Math.abs(f2-440); let best=null,be=1e9;
+  SIMPLE.forEach(([p,q])=>{ const e=Math.abs(1200*Math.log2(r/(p/q))); if(e<be){ be=e; best=[p,q]; } });
+  let s='Ratio <b class="num">'+r.toFixed(4)+'</b>. ';
+  if(be<3) s+='Right on the simple fraction <b class="num">'+best[0]+':'+best[1]+'</b>. '+(best[0]*best[1]<=2?'The two waves lock together completely and merge into one note. Consonant to the point of boring.':'They realign every few cycles, so it sounds harmonious.');
+  else if(be<20) s+='Only '+be.toFixed(1)+' cents from <b class="num">'+best[0]+':'+best[1]+'</b>. Close enough to sound mostly harmonious, with a slight shimmer if you listen closely. This is where equal temperament lives.';
+  else s+='The nearest simple fraction is '+best[0]+':'+best[1]+', but it\'s '+be.toFixed(0)+' cents away. Out of reach.';
+  if(d>.3&&d<16) s+=' 🌊 Beats: the frequencies differ by '+d.toFixed(1)+' Hz, so it wobbles '+d.toFixed(1)+' times per second.';
+  else if(d>=16&&d<70) s+=' 🪚 Roughness zone: '+d.toFixed(0)+' Hz apart, wobbling too fast to count and blurring into a buzz.';
+  return s;
+}
+function drawLab(){
+  const c=$('#labCv'); if(!c.clientWidth) return; const {x,w,h}=fit(c), f2=lab.f2, d=Math.abs(f2-440);
+  let win=.02; if(d>.3&&d<40) win=Math.min(.7,2.2/d);
+  const L=h/3, tw=2*Math.PI;
+  band(x,t=>Math.sin(tw*440*t),w,L*.5,L*.36,win,css('--muted'));
+  band(x,t=>Math.sin(tw*f2*t),w,L*1.5,L*.36,win,css('--teal'));
+  band(x,t=>(Math.sin(tw*440*t)+Math.sin(tw*f2*t))/2,w,L*2.5,L*.42,win,css('--accent'));
+  x.font='11px '+css('--mono'); x.fillStyle=css('--ink');
+  x.fillText('440 Hz',6,13); x.fillText(f2.toFixed(1)+' Hz',6,L+13); x.fillText('Sum (screen width = '+(win*1000).toFixed(0)+' ms)',6,2*L+13);
+  $('#labF').textContent=f2.toFixed(2)+' Hz'; $('#labInfo').innerHTML=describe();
+}
+function setF2(f,fromSlider){ lab.f2=f; if(!fromSlider) $('#labSl').value=f; if(lab.on&&lab.o2) lab.o2.frequency.rampTo(f,.04); drawLab(); }
+async function labStart(){ if(!await audio()) return; stopSines(); lab.g=new Tone.Gain(0).connect(bus); lab.o1=new Tone.Oscillator(440,'sine').connect(lab.g).start(); lab.o2=new Tone.Oscillator(lab.f2,'sine').connect(lab.g).start(); lab.g.gain.rampTo(.2,.08); lab.on=true; $('#labHold').setAttribute('aria-pressed',true); $('#labHold').textContent='⏹ Stop'; }
+function labStop(){ if(!lab.on) return; const {g,o1,o2}=lab; g.gain.rampTo(0,.06); setTimeout(()=>{ [o1,o2,g].forEach(n=>{ try{ n.dispose(); }catch(e){} }); },200); lab.on=false; lab.o1=lab.o2=lab.g=null; $('#labHold').setAttribute('aria-pressed',false); $('#labHold').textContent='♾️ Keep playing while I drag'; }
+function initLab(){
+  const mk=(el,list)=>el.innerHTML=list.map(([f,t])=>'<button data-f="'+f+'">'+t+'</button>').join('');
+  mk($('#labSweet'),[[880,'🎂 880: double, 2:1'],[220,'🕳️ 220: half, 1:2'],[440,'🪞 440: identical, 1:1'],[660,'🤝 660: 3:2'],[586.67,'🪑 586.67: 4:3'],[550,'😊 550: 5:4']]);
+  mk($('#labSpicy'),[[443,'🌊 443: slow wobble'],[452,'🐝 452: buzzy wobble'],[466.16,'🪚 466: chainsaw, the piano\'s minor 2nd'],[415.3,'😬 415: same thing going down'],[622.25,'😈 622: tritone, odd but not harsh']]);
+  $('#lab').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return;
+    if(b.dataset.f){ setF2(+b.dataset.f); if(!lab.on) sines([440,lab.f2],2.6); }
+    else if(b.dataset.lab){ labStop(); sines(b.dataset.lab==='a'?[440]:b.dataset.lab==='b'?[lab.f2]:[440,lab.f2],2.4); }
+    else if(b.id==='labHold'){ lab.on?labStop():labStart(); } });
+  $('#labSl').addEventListener('input',e=>setF2(+e.target.value,true));
+}
+
+/* ---------------- overtones ---------------- */
+let otN=0;
+const OT=[null,['G3','The fundamental. The whole string vibrates together: the G you normally hear.'],['G4','One octave up. Touch the string lightly at its exact middle.'],['D5','An octave plus a perfect fifth. Touch at 1/3.'],['G5','Two octaves up. Touch at 1/4.'],['B5','Two octaves plus a major third. Touch at 1/5. About 14 cents lower than the piano\'s B.'],['D6','Two octaves plus a perfect fifth. Touch at 1/6.'],['F6 (flat)','About 31 cents lower than the piano\'s F. The piano doesn\'t have this note. That\'s the blues flavor.'],['G6','Three octaves up. Touch at 1/8.']];
+function drawOt(){
+  const c=$('#otCv'); if(!c.clientWidth) return; const {x,w,h}=fit(c), x0=18, x1=w-18, yc=h/2, A=h*.3;
+  const curve=(n,amp,col,lw)=>{ [1,-1].forEach(s=>{ x.beginPath(); for(let i=0;i<=200;i++){ const u=i/200, y=yc-s*amp*Math.sin(n*Math.PI*u); i?x.lineTo(x0+u*(x1-x0),y):x.moveTo(x0+u*(x1-x0),y); } x.strokeStyle=col; x.lineWidth=lw; x.stroke(); }); };
+  if(otN===0) for(let n=8;n>=1;n--) curve(n,A/Math.sqrt(n),n>=4&&n<=6?css('--accent'):css('--muted'),n>=4&&n<=6?1.6:1);
+  else { curve(otN,A,css('--teal'),2.2); x.fillStyle=css('--teal'); for(let k=1;k<otN;k++){ x.beginPath(); x.arc(x0+k/otN*(x1-x0),yc,3.5,0,7); x.fill(); } if(otN>1){ x.font='18px sans-serif'; x.textAlign='center'; x.fillText('👆',x0+(x1-x0)/otN,yc+A+16); x.textAlign='left'; } }
+  x.fillStyle=css('--amber'); [x0,x1].forEach(px=>{ x.fillRect(px-3,yc-14,6,28); });
+}
+function initOt(){
+  $('#otBtns').innerHTML=[1,2,3,4,5,6,7,8].map(n=>'<button data-n="'+n+'" class="num">#'+n+' · '+(196*n)+'</button>').join('');
+  $('#ot').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return;
+    if(b.dataset.n){ otN=+b.dataset.n; drawOt(); sines([196*otN],1.8); $('#otInfo').innerHTML='<b class="num">Overtone #'+otN+' · '+196*otN+' Hz · '+OT[otN][0]+'</b>　The string vibrates in '+otN+(otN===1?' piece':' segments')+'. '+OT[otN][1]; }
+    else if(b.dataset.ot==='all'){ otN=0; drawOt(); sines([1,2,3,4,5,6,7,8].map(n=>196*n),3,[1,.5,.33,.25,.2,.17,.14,.12]); $('#otInfo').innerHTML='Eight sine waves at 1, 2, 3 ... 8 times the frequency, each quieter than the last. Suddenly it stops sounding like a hearing-test beep and starts sounding like a bowed string. <b>Timbre is the recipe of overtones.</b>'; }
+    else if(b.dataset.ot==='456'){ otN=0; drawOt(); sines([784,980,1176],3); $('#otInfo').innerHTML='784 : 980 : 1176, which is <b class="num">4 : 5 : 6</b>. G, B, D. A shimmering major triad, living inside your G string all along.'; }
+    else if(b.dataset.ot==='low'){ sines([392,490,588],3); [67,71,74].forEach(m=>flash(m,'demo',2400)); $('#otInfo').innerHTML='Same ratios, everything divided by 2. Still 4:5:6, still a major triad. The lit keys up top are the three closest piano keys. Tap the piano button next to it to compare: the piano\'s B is slightly higher, and the harmony shimmers a little.'; } });
+}
+
+/* ---------------- stacking fifths ---------------- */
+let fk=0; const FN=['A','E','B','F♯','C♯','G♯','D♯','A♯','F','C','G','D','A?'];
+function fCalc(k){ const raw=Math.pow(1.5,k), fold=raw/Math.pow(2,Math.floor(Math.log2(raw)+1e-9)), pure=440*fold, et=440*Math.pow(2,((7*k)%12)/12); return {raw,fold,pure,et,cents:1200*Math.log2(pure/et)}; }
+function fRender(){
+  $('#fChain').innerHTML=FN.map((n,i)=>'<span class="'+(i<=fk?(i===12?'boom':'done'):'')+'">'+n+'</span>').join('');
+  const c=fCalc(fk); let s;
+  if(fk===0) s='Start: A, 440 Hz. Each click multiplies the frequency by 1.5 (one perfect fifth), and divides by 2 to fold it back whenever it leaves the octave.';
+  else if(fk<12) s='Stacked <b class="num">'+fk+'</b> '+(fk===1?'time':'times')+': 440 × 1.5<sup>'+fk+'</sup>, folded back into the octave, is <b class="num">'+c.pure.toFixed(2)+' Hz</b>. The piano\'s '+FN[fk]+' is <span class="num">'+c.et.toFixed(2)+' Hz</span>, so you\'re already <b class="num">'+c.cents.toFixed(1)+'</b> cents sharp. '+(fk>=6?'The error is quietly collecting interest.':'Not noticeable yet.');
+  else s='💥 Twelve fifths stacked. It should land back on A (440), but it actually reaches <b class="num">'+c.pure.toFixed(2)+' Hz</b>, <b class="num">'+c.cents.toFixed(2)+'</b> cents sharp, almost a quarter of a semitone. The circle won\'t close. Tap the button on the right to hear the two A\'s clash.';
+  $('#fInfo').innerHTML=s; $('#fAdd').disabled=fk>=12;
+}
+function initFifths(){
+  $('#fAdd').onclick=()=>{ if(fk<12) fk++; fRender(); const c=fCalc(fk); sines([c.pure],.9); };
+  $('#fReset').onclick=()=>{ fk=0; fRender(); };
+  $('#fCmp').onclick=()=>{ const c=fCalc(fk); sines([c.pure,c.et],3.2); };
+  fRender();
+}
+
+/* ---------------- tables ---------------- */
+function initTables(){
+  $('#tetTbl').innerHTML='<tr><th>Semitones</th><th>Interval</th><th>Equal-tempered ratio</th><th>Nice fraction</th><th>Fraction value</th><th>How far off</th></tr>'+IV.map(v=>{ const et=Math.pow(2,v[0]/12), ji=v[3]/v[4], c=v[0]*100-1200*Math.log2(ji), a=Math.abs(c); return '<tr><td class="n">'+v[0]+'</td><td>'+v[1]+'</td><td class="n">'+et.toFixed(4)+'</td><td class="n">'+v[3]+':'+v[4]+'</td><td class="n">'+ji.toFixed(4)+'</td><td class="n '+(a>11?'hot':a<2.5?'cool':'')+'">'+(a<.05?'0, perfect':(c>0?'+':'−')+a.toFixed(1)+' cents'+(a>11?' 😖':a<2.5?' 👌':''))+'</td></tr>'; }).join('');
+  $('#ivTbl').innerHTML='<tr><th>Listen</th><th>Semitones</th><th>Name</th><th>Abbr.</th><th>Sounds like</th></tr>'+IV.map(v=>'<tr><td><button class="mini" data-a="60,'+(60+v[0])+'" aria-label="Play '+v[1]+'">▶</button></td><td class="n">'+v[0]+'</td><td>'+v[1]+'</td><td class="n">'+v[2]+'</td><td>'+v[5]+'</td></tr>').join('');
+}
+
+/* ---------------- chord explorer ---------------- */
+function mountExplorer(el){
+  const keys=el.dataset.set.split(','), st={r:0,k:keys[0]};
+  el.innerHTML='<h3>🔬 Chord recipe machine: pick a root, pick a type</h3><div class="chipset roots">'+ROOTS.map((n,i)=>'<button data-r="'+i+'">'+n+'</button>').join('')+'</div><div class="chipset">'+keys.map(k=>'<button data-k="'+k+'">'+Q[k].lab+'</button>').join('')+'</div><div class="ex-out" style="display:flex;flex-direction:column;gap:8px"></div>';
+  const out=$('.ex-out',el);
+  function render(sound){
+    const q=Q[st.k], rn=ROOTS[st.r], ms=chordMidis(st.r,st.k);
+    $$('[data-r]',el).forEach(b=>b.setAttribute('aria-pressed',+b.dataset.r===st.r)); $$('[data-k]',el).forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===st.k));
+    let rec=''; q.iv.forEach((s,i)=>{ if(i) rec+='<span class="arr">+'+(s-q.iv[i-1])+' semitones<br>'+(STEP[s-q.iv[i-1]]||'')+' →</span>'; rec+='<span class="pill"><b>'+spell(st.r,s,q.deg[i])+'</b>'+ROLE[q.deg[i]]+'</span>'; });
+    out.innerHTML='<div class="ex-name">'+rn+'<span>'+q.sym+'</span></div><div><b>'+fullName(st.r,st.k)+'</b>　'+q.mood+'</div><div class="recipe">'+rec+'</div><div style="font-size:.9rem">✍️ Ways you\'ll see it written: <span class="num">'+q.alias.map(a=>rn+a).join(', ')+'</span></div><div style="font-size:.9rem">🎭 '+q.vibe+'</div><div class="row"><button class="pri" data-x="blk">🎹 Press together</button><button data-x="arp">🎻 Bow it apart, then together</button></div>';
+    if(sound) play(ms,'blk');
+  }
+  el.addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return;
+    if(b.dataset.r!=null){ st.r=+b.dataset.r; render(true); } else if(b.dataset.k){ st.k=b.dataset.k; render(true); } else if(b.dataset.x) play(chordMidis(st.r,st.k),b.dataset.x); });
+  render(false);
+}
+
+/* ---------------- progressions ---------------- */
+const DIA=[['I','C',[60,64,67],'tonic, home'],['ii','Dm',[62,65,69],''],['iii','Em',[64,67,71],''],['IV','F',[65,69,72],'subdominant, going out'],['V','G',[55,59,62],'dominant, wants to go home'],['vi','Am',[57,60,64],''],['vii°','B°',[59,62,65],'']];
+const V={C:[60,64,67],Dm:[62,65,69],Em:[64,67,71],F:[65,69,72],G:[55,59,62],Am:[57,60,64],Dm7:[62,65,69,72],G7:[55,59,62,65],Cmaj7:[60,64,67,71]};
+const SEQ=[['🌍 I–V–vi–IV: the pop "axis"','C G Am F','I, V, vi, IV. From the Beatles to TikTok hits, half of pop music makes a living off it.'],['🌸 IV–V–iii–vi: the "royal road"','F G Em Am','IV, V, iii, vi. Known in Japan as the Ōdō, or royal road, progression: the secret family recipe of J-pop and anime songs. You recognize it the moment you hear it.'],['🎻 The Canon progression','C G Am Em F C F G','The eight chords of Pachelbel\'s Canon in D, moved to C here. The cellist plays the same eight bass notes 28 times from start to finish, a famous workplace tragedy in classical music.'],['🕺 I–vi–IV–V: the fifties progression','C Am F G','I, vi, IV, V. The skeleton of "Stand by Me," nostalgia filter included.'],['🎷 ii–V–I: jazz\'s everyday greeting','Dm7 G7 Cmaj7','ii, V, I, all seventh chords. Going out, wanting to go home, home: a tiny story told in three steps.']];
+function initProgress(){
+  $('#diaRow').innerHTML=DIA.map(d=>'<button data-p="'+d[2]+'"><b class="num" style="color:var(--teal)">'+d[0]+'</b> '+d[1]+(d[3]?' <small style="color:var(--muted)">'+d[3]+'</small>':'')+'</button>').join('');
+  $('#seqRow').innerHTML=SEQ.map((s,i)=>'<button data-q="'+i+'">'+s[0]+'</button>').join('');
+  $('#seqRow').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; const s=SEQ[+b.dataset.q], names=s[1].split(' ');
+    $('#seqInfo').textContent=s[2];
+    playSeq(names.map(n=>V[n]),i=>{ if(i<0) note('<b>'+names.join(' → ')+'</b>　That\'s the whole progression. I played every chord as a <b>block chord</b>, with the root at the bottom.'); $('#seqNow').innerHTML=i<0?names.join(' → '):names.map((n,j)=>j===i?'<span style="color:var(--accent)">'+n+'</span>':'<span style="opacity:.4">'+n+'</span>').join(' → '); },950,names); });
+}
+
+/* ---------------- dojo ---------------- */
+const D={mode:'ear',pool:'tri',q:null,done:false,streak:0,opts:[]};
+const POOLS={tri:['maj','min','dim','aug'],sev:['maj','min','dim','aug','maj7','dom7','m7','m7b5']};
+const PRAISE=['That\'s right, your ears just leveled up 🎉','Beautiful. Those ears deserve insurance 👂✨','Correct. The piano department next door is eyeing you warily 👀','Right on. All that rosin wasn\'t for nothing 🎻','Solid. Your music teacher would be moved to tears 🥹'];
+const cname=(r,k)=>ROOTS[r]+Q[k].sym;
+function spellAll(r,k){ return Q[k].iv.map((s,i)=>spell(r,s,Q[k].deg[i])).join(' '); }
+function dSeg(){ $$('#dMode button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===D.mode)); $$('#dPool button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.pool===D.pool)); $('#dStreak').textContent=D.streak>1?'🔥 Streak: '+D.streak:''; }
+function dNew(){
+  const k=pick(POOLS[D.pool]), r=rnd(12); D.q={k,r,ms:chordMidis(r,k)}; D.done=false;
+  stopSeq(); clearMarks(); held.clear(); $('#dFb').innerHTML=''; $('#dNew').textContent='🎲 Next question';
+  if(D.mode==='name'){ const seen=new Set([cname(r,k)]); D.opts=[{r,k}]; let guard=0; while(D.opts.length<4&&guard++<99){ const o=Math.random()<.6?{r,k:pick(POOLS[D.pool])}:{r:(r+pick([3,4,5,7,8,9]))%12,k}; if(!seen.has(cname(o.r,o.k))){ seen.add(cname(o.r,o.k)); D.opts.push(o); } } D.opts.sort(()=>Math.random()-.5); }
+  if(D.mode==='build') setLatch(true); else if(latch) setLatch(false); else syncHeld();
+  dRender();
+  if(D.mode==='ear'){ note('For this one I played a <b>block chord</b>. Which notes? That\'s a secret for now 🤫 The keys won\'t light up either.'); play(D.q.ms,'blk',null); }
+  if(D.mode==='name'){ note('I played the lit keys as a <b>block chord</b>: <b>'+D.q.ms.map(noteName).join(' + ')+'</b><br>You get the note names; you name the chord.'); D.q.ms.forEach(m=>mark(m,'demo')); play(D.q.ms,'blk',null); }
+}
+function dRender(){
+  const q=D.q, b=$('#dBody'); if(!q){ b.innerHTML='<p class="prompt">Pick a practice mode, then tap New question.</p>'; return; }
+  if(D.mode==='ear') b.innerHTML='<p class="prompt">🎧 What kind of chord was that? No peeking at the keyboard yet.</p><div class="row"><button data-act="again">🔁 Listen again</button><button data-act="arp">🎻 Hear it broken up</button></div><div class="opts" style="margin-top:8px">'+POOLS[D.pool].map(k=>'<button data-ans="'+k+'">'+Q[k].lab+' <span class="num" style="color:var(--muted)">'+(Q[k].sym||'M')+'</span></button>').join('')+'</div>';
+  else if(D.mode==='name') b.innerHTML='<p class="prompt">👀 Which chord are the lit keys on the keyboard up top?</p><div class="row"><button data-act="again">🔁 Listen again</button></div><div class="opts" style="margin-top:8px">'+D.opts.map((o,i)=>'<button data-ans="'+i+'" class="num">'+cname(o.r,o.k)+'</button>').join('')+'</div>';
+  else b.innerHTML='<p class="prompt">🎹 Play this on the keyboard up top: <span class="big">'+cname(q.r,q.k)+'</span><br><small style="color:var(--muted)">Sticky keys are on automatically. Any octave and any inversion counts. Tap a wrong key again to remove it.</small></p><div class="row"><button data-act="hint">💡 Give me a hint</button><button data-act="reveal">👂 Just show me the answer</button></div><p id="dStat" class="info" style="margin:8px 0 0;min-height:1.8em"></p>';
+}
+function dWin(extra){ const q=D.q; D.done=true; D.streak++; dSeg(); clearMarks(); q.ms.forEach(m=>mark(m,'good')); $('#dFb').innerHTML='<b style="color:var(--ok)">'+pick(PRAISE)+'</b><br>This is <b class="num">'+cname(q.r,q.k)+'</b>, '+fullName(q.r,q.k)+'　'+Q[q.k].mood+'<br>Members: <span class="num">'+spellAll(q.r,q.k)+'</span>. '+(extra||''); }
+function dAnswer(btn){
+  const q=D.q; if(!q||D.done) return;
+  if(D.mode==='ear'){ const k=btn.dataset.ans;
+    if(k===q.k){ btn.classList.add('right'); dWin(Q[k].vibe); play(q.ms,'arp',null); }
+    else { btn.classList.add('wrong'); btn.disabled=true; D.streak=0; dSeg(); $('#dFb').innerHTML='<b style="color:var(--bad)">Not '+Q[k].en+'.</b> Now playing: first the '+Q[k].en+' on the same root (your pick), then the question. Can you hear the difference?'; (async()=>{ if(!await audio()) return; stopSeq(); hit(chordMidis(q.r,k),1.2,null); timers.push(setTimeout(()=>hit(q.ms,1.5,null),1500)); })(); } }
+  else { const o=D.opts[+btn.dataset.ans];
+    if(o.r===q.r&&o.k===q.k){ btn.classList.add('right'); dWin(); play(q.ms,'blk',null); }
+    else { btn.classList.add('wrong'); btn.disabled=true; D.streak=0; dSeg(); $('#dFb').innerHTML='<b style="color:var(--bad)">Not '+cname(o.r,o.k)+'.</b> The members of '+cname(o.r,o.k)+' would be <span class="num">'+spellAll(o.r,o.k)+'</span>. Compare them with the lit keys'+(o.r!==q.r?', starting with which note is lowest.':', and count the semitones between neighboring keys.'); } }
+}
+function evalBuild(last){
+  const q=D.q, want=new Map(q.iv=Q[q.k].iv.map((s,i)=>[(q.r+s)%12,i])), got=new Set(), wrong=[];
+  clearMarks('good'); clearMarks('bad');
+  held.forEach(m=>{ if(want.has(m%12)){ got.add(m%12); mark(m,'good'); } else { wrong.push(m); mark(m,'bad'); } });
+  const st=$('#dStat'); if(st) st.innerHTML=Q[q.k].deg.map((d,i)=>ROLE[d]+' '+(got.has((q.r+Q[q.k].iv[i])%12)?'✅':'⬜')).join('　')+(wrong.length?'<br><span style="color:var(--bad)">❌ '+wrong.map(noteName).join(', ')+(wrong.length>1?' aren\'t members':' isn\'t a member')+' of '+cname(q.r,q.k)+'. Tap again to send '+(wrong.length>1?'them':'it')+' away</span>':'');
+  if(last!=null&&held.has(last)){ const i=want.get(last%12); $('#dFb').innerHTML=i!=null?'✅ '+noteName(last)+' is its '+ROLE[Q[q.k].deg[i]]+'.':'❌ '+noteName(last)+' snuck in. '+(got.has(q.r)?'Try counting semitones up from the root.':'Find the root, '+ROOTS[q.r]+', first.'); }
+  if(got.size===want.size&&!wrong.length){ const ms=[...held].sort((a,b)=>a-b); dWin(ms[0]%12!==q.r?'You played an inversion: the lowest note isn\'t the root, and it still counts.':''); D.q.ms.forEach(m=>keyEl[m].classList.remove('good')); ms.forEach(m=>mark(m,'good')); timers.push(setTimeout(()=>hit(ms,1.6,null),450)); }
+}
+function heldChanged(last){ if(cur==='dojo'&&D.mode==='build'&&D.q&&!D.done) evalBuild(last); }
+function initDojo(){
+  dSeg();
+  $('#dMode').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; D.mode=b.dataset.mode; D.q=null; clearMarks(); if(latch&&D.mode!=='build') setLatch(false); $('#dFb').innerHTML=''; $('#dNew').textContent='🎲 New question'; dSeg(); dRender(); });
+  $('#dPool').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; D.pool=b.dataset.pool; dSeg(); });
+  $('#dNew').onclick=dNew;
+  $('#dBody').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b||!D.q) return; const q=D.q;
+    if(b.dataset.ans!=null) dAnswer(b);
+    else if(b.dataset.act==='again') play(q.ms,'blk',null);
+    else if(b.dataset.act==='arp') play(q.ms,'arp',null);
+    else if(b.dataset.act==='hint'){ const iv=Q[q.k].iv; $('#dFb').innerHTML='💡 Recipe for a '+Q[q.k].en+': start on the root, '+ROOTS[q.r]+iv.slice(1).map((s,i)=>', then up '+(s-iv[i])+' semitones').join('')+'. Count black and white keys alike.'; }
+    else if(b.dataset.act==='reveal'){ D.done=true; D.streak=0; dSeg(); held.clear(); syncHeld(); clearMarks(); q.ms.forEach(m=>mark(m,'demo')); play(q.ms,'arp',null); $('#dFb').innerHTML='Answer: <b class="num">'+spellAll(q.r,q.k)+'</b>. '+Q[q.k].vibe+' Try the next one yourself.'; } });
+}
+
+/* ---------------- start ---------------- */
+buildKb();
+$('#chips').innerHTML=CH.map(c=>'<a href="#'+c[0]+'" data-id="'+c[0]+'">'+c[1]+'</a>').join('');
+initLab(); initOt(); initFifths(); initTables(); $$('.explorer').forEach(mountExplorer); initProgress(); initDojo();
+$('#tLabel').onclick=e=>{ const on=$('#kb').classList.toggle('labels'); e.currentTarget.setAttribute('aria-pressed',on); };
+$('#tLatch').onclick=()=>setLatch(!latch);
+$('#tClear').onclick=()=>{ held.clear(); clearMarks(); stopSeq(); syncHeld(); heldChanged(null); };
+$('#tChord').onclick=()=>{ if(held.size){ const ms=[...held].sort((a,b)=>a-b); play(ms,'blk',null); slip(ms,'blk','🫵 You set up these keys, I\'ll play them together'); slipNow(-1); } else $('#readout').innerHTML=WHO+'Turn on 📌 Sticky first, light up a few keys, then tap Play.'; };
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-p],[data-a],[data-m],[data-s],[data-seq]'); if(!b) return; const nums=s=>s.split(',').map(Number);
+  if(b.dataset.p) play(nums(b.dataset.p),'blk'); else if(b.dataset.a) play(nums(b.dataset.a),'arp'); else if(b.dataset.m) play(nums(b.dataset.m),'mel'); else if(b.dataset.s) sines(nums(b.dataset.s),3);
+  else if(b.dataset.seq){ const ns=(b.dataset.names||'').split('|'); playSeq(b.dataset.seq.split('|').map(nums),null,1300,ns); } });
+const KMAP={a:60,w:61,s:62,e:63,d:64,f:65,t:66,g:67,y:68,h:69,u:70,j:71,k:72,o:73,l:74};
+document.addEventListener('keydown',e=>{ if(e.repeat||e.metaKey||e.ctrlKey||e.altKey||/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return; const m=KMAP[e.key.toLowerCase()]; if(m) press(m); });
+window.addEventListener('hashchange',route);
+let rz; window.addEventListener('resize',()=>{ clearTimeout(rz); rz=setTimeout(()=>{ if(cur==='sine') drawLab(); if(cur==='overtone') drawOt(); },120); });
+if(window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{ if(cur==='sine') drawLab(); if(cur==='overtone') drawOt(); });
+readout(); route();
+</script>
+
+</body></html>

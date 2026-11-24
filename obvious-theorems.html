@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Field Guide to Obvious Theorems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap">
+<style>
+/* Layout: a sheet of grid paper (a chalkboard in dark mode). One long scroll with a sticky index of the nine theorems;
+   every theorem follows the same six parts: big discovery → test it yourself → dressed-up plain words → symbols line by line → final form → where it applies */
+:root{
+  --paper:#f4f7fc; --card:#ffffff; --grid:#d9e4f4; --line:#d5deec;
+  --ink:#1b2640; --ink2:#4c5b78; --muted:#8792a9;
+  --curve:#6352d9; --hit:#e2601f; --ref:#0f8f74;
+  --kid:#fff1cf; --adult:#e6edfb; --soft:#eef3fb;
+  --display:"Fredoka",system-ui,sans-serif;
+  --body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#15211d; --card:#1c2b26; --grid:#283b35; --line:#32473f;
+    --ink:#eef4ec; --ink2:#bccabf; --muted:#82948a;
+    --curve:#b6abff; --hit:#ffa26e; --ref:#62dcbb;
+    --kid:#4a3f1c; --adult:#24394b; --soft:#22342e;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#15211d; --card:#1c2b26; --grid:#283b35; --line:#32473f;
+  --ink:#eef4ec; --ink2:#bccabf; --muted:#82948a;
+  --curve:#b6abff; --hit:#ffa26e; --ref:#62dcbb;
+  --kid:#4a3f1c; --adult:#24394b; --soft:#22342e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.7;
+}
+main{max-width:780px;margin:0 auto;padding:0 16px 80px;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--display);font-weight:500;text-wrap:balance;line-height:1.3}
+.hero{padding:44px 0 4px}
+.hero h1{font-size:clamp(32px,6.5vw,50px)}
+.hero h1 span{color:var(--hit)}
+.hero p{margin-top:12px;color:var(--ink2);max-width:36em}
+.hero .tip{margin-top:16px;padding:14px 16px;background:var(--kid);border-radius:14px;color:var(--ink);font-size:15px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 22px 24px}
+.card>h2{font-size:24px;margin-bottom:12px}
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;list-style:none}
+.how li{background:var(--soft);border-radius:12px;padding:12px 14px;font-size:14.5px;color:var(--ink2)}
+.how b{display:block;color:var(--ink);font-size:15.5px}
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px 18px}
+.gloss div{display:flex;gap:10px;align-items:baseline;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14.5px;color:var(--ink2)}
+.gloss dt{flex:none;min-width:58px;font-family:"Times New Roman",serif;font-size:19px;color:var(--curve);font-style:italic}
+nav{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--line);margin:0 -16px;padding:10px 16px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav a{flex:none;text-decoration:none;color:var(--ink2);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 13px;font-size:14px;white-space:nowrap}
+nav a:hover,nav a:focus-visible{color:var(--hit);border-color:var(--hit);outline:none}
+.thm{display:flex;flex-direction:column;gap:22px}
+.thm header{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.thm .no{font-family:var(--display);font-size:15px;color:var(--muted)}
+.thm header h2{font-size:30px;flex:1 1 auto}
+.who{background:var(--soft);border-radius:12px;padding:10px 14px;font-size:14.5px;color:var(--ink2)}
+.who b{color:var(--ink)}
+.thm h3{font-size:19px;margin-bottom:10px}
+.chat{display:flex;flex-direction:column;gap:8px}
+.chat p{max-width:86%;padding:9px 14px;border-radius:16px;font-size:15.5px}
+.chat .k{align-self:flex-start;background:var(--kid);border-bottom-left-radius:4px}
+.chat .a{align-self:flex-end;background:var(--adult);border-bottom-right-radius:4px}
+.chat .n{align-self:center;max-width:100%;background:none;color:var(--muted);font-size:14px;padding:2px 0;text-align:center}
+.chat i{font-style:normal;font-size:12.5px;color:var(--muted);display:block;line-height:1.3}
+.lab{border:1px solid var(--line);border-radius:14px;overflow:hidden;background-color:var(--card);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:20px 20px}
+.lab svg{display:block;width:100%;height:auto}
+.lab text{font-family:var(--body);font-size:15px;fill:var(--ink2)}
+.labbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:10px}
+.labbar span{font-size:14.5px;color:var(--ink2);flex:1 1 260px}
+.labbar small{display:block;color:var(--muted);font-size:13px}
+button{font:inherit;font-size:15px;cursor:pointer;color:var(--card);background:var(--hit);border:0;border-radius:999px;padding:8px 18px;white-space:nowrap}
+button:hover{filter:brightness(1.08)} button:active{transform:scale(.97)}
+button:focus-visible{outline:3px solid var(--curve);outline-offset:2px}
+.plain{display:flex;flex-direction:column;gap:8px;border-left:4px solid var(--curve);padding:4px 0 4px 14px}
+.plain p{display:flex;gap:10px;align-items:baseline}
+.plain b{flex:none;font-weight:500;font-size:13px;color:var(--curve);border:1px solid var(--curve);border-radius:6px;padding:0 7px;line-height:1.7;min-width:52px;text-align:center}
+.plain p.so b{color:var(--hit);border-color:var(--hit)}
+.steps{list-style:none;display:flex;flex-direction:column;gap:12px;counter-reset:s}
+.steps li{counter-increment:s;background:var(--soft);border-radius:14px;padding:12px 16px}
+.steps .say{font-size:15px}
+.steps .say::before{content:"Step " counter(s);font-family:var(--display);color:var(--muted);font-size:13px;margin-right:10px}
+.steps .say q{quotes:"“" "”";color:var(--hit)}
+.steps .arrow{color:var(--muted);font-size:13px;margin:2px 0 -6px}
+.steps .why{font-size:14px;color:var(--ink2)}
+.tex{overflow-x:auto;overflow-y:hidden;padding:2px 0}
+.final{border:2px dashed var(--hit);border-radius:14px;padding:6px 14px 2px}
+.book{margin-top:10px;font-size:14.5px;color:var(--ink2);border-left:4px solid var(--line);padding-left:12px}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.notes div{border:1px solid var(--line);border-radius:14px;padding:12px 16px;font-size:14.5px;color:var(--ink2)}
+.notes b{display:block;color:var(--ink);font-size:15.5px;margin-bottom:2px}
+pre{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:14px;line-height:1.55;overflow-x:auto;color:var(--ink2)}
+.end p{color:var(--ink2)} .end p+p{margin-top:10px}
+.credit{text-align:center;font-size:13px;font-style:italic;color:var(--muted)}
+mjx-container{color:var(--ink)}
+mjx-container[display="true"]{margin:.7em 0 !important;text-align:left !important}
+@media (max-width:480px){.card{padding:18px 16px 20px}.thm header h2{font-size:26px}}
+</style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <h1>A Field Guide to Obvious Theorems <span>🫠</span></h1>
+    <p>Nine calculus theorems that look terribly impressive in textbooks. Once you truly understand them, you'll feel a very particular kind of beauty, the kind a Chinese internet joke sums up as: "Listening to you talk was exactly like listening to you talk."</p>
+    <p class="tip">🧑‍🌾 <b>A tip from the village chief:</b> Draw any curve on the grid paper, then draw a dashed horizontal line at a height between the curve's two ends. Whoa! The curve is guaranteed to touch it. How amazing. Congratulations, you've just independently discovered the Intermediate Value Theorem.</p>
+  </section>
+
+  <section class="card">
+    <h2>🗺️ How to read each theorem</h2>
+    <ol class="how">
+      <li><b>🎭 The big discovery</b>Watch a mathematician, as a kid, treat a statement of the obvious as an earth-shattering discovery.</li>
+      <li><b>🎲 Test it yourself</b>Draw random new curves and try to make the theorem fail.</li>
+      <li><b>📜 Dressed up</b>The same obvious statement, neatly sorted into "given, if, then," still in plain words.</li>
+      <li><b>🔧 Swap in symbols</b>Replace it one line at a time until it looks like the textbook version, with every part labeled.</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <h2>🔤 Symbol translator</h2>
+    <dl class="gloss" id="gloss"></dl>
+  </section>
+
+  <nav id="nav" aria-label="Theorem index"></nav>
+  <div id="list" style="display:flex;flex-direction:column;gap:28px"></div>
+
+  <section class="card end">
+    <h2>🌳 How the nine obvious statements are related</h2>
+<pre>
+🌳 Nine obvious statements
+│
+├── ✏️ Only need "drawn in one stroke" (continuous)
+│   ├── Zero Theorem
+│   ├── Intermediate Value    ← the Zero Theorem with the line raised
+│   └── Extreme Value
+│
+├── 🤏 About "where it ends up" (limits)
+│   ├── Squeeze Theorem
+│   └── Monotone Convergence
+│
+└── 🛹 Also need "no sharp corners" (differentiable)
+    ├── Fermat's Lemma
+    ├── Rolle's Theorem    ← Extreme Value + Fermat
+    ├── Lagrange           ← Rolle with your head tilted
+    └── Cauchy             ← Lagrange driving two cars
+</pre>
+  </section>
+
+  <section class="card end">
+    <h2>🤔 So why do mathematicians bother writing down the obvious?</h2>
+    <p>Because "you can see it in the picture" doesn't count. You drew that picture, and there are plenty of weird curves you could never draw. Each of those wordy conditions at the start of a theorem plugs a real loophole, and every "When the obvious breaks" box shows you what that loophole looks like.</p>
+    <p>That's why exams always test the conditions: closed interval or open, continuous or differentiable. You can guess the conclusion with your eyes closed. It's obvious, after all.</p>
+  </section>
+
+  <p class="credit">Created by Zhixing Yao with AI assistance, as a self-study and teaching explainer.</p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global',mtextInheritFont:true},options:{enableMenu:false}};
+const r=String.raw;
+
+/* ---------- content ---------- */
+const GLOSS=[
+  ['f(x)','the height of the curve at position x'],
+  ['[a, b]','the stretch from a to b, endpoints included'],
+  ['(a, b)','the stretch from a to b, endpoints excluded'],
+  ['∈','is in, belongs to'],
+  ['∃','there exists: at least one can be found'],
+  ['∀','for all: pick any one you like'],
+  ['ξ','"xi" (pronounced "ksee"), the name of the point we found'],
+  ["f′(x)",'the slope of the curve at x, a.k.a. the derivative'],
+  ['lim','the value it keeps approaching and finally settles on'],
+  ['continuous','drawn in one stroke, pen never leaves the paper'],
+  ['differentiable','smooth, no sharp corners'],
+  ['⟹','therefore, so'],
+];
+
+const CONT=r`\text{ is continuous on }`, DIFF=r`\text{ is differentiable on }`;
+const THEOREMS=[
+{id:'zero',icon:'🌊',name:'The Zero Theorem',short:'Zero',
+ who:['Bolzano','Bernard Bolzano, 1781–1848','A priest in Prague who preached by day and nitpicked by night. Whatever everyone else found obvious, he insisted on proving.'],
+ chat:[['k','Little Bolzano','Mom! I walked from this side of the river to the other side, so my feet must have gotten wet somewhere in between!'],['a','Mom','Well, obviously. Can you fly?'],['k','Little Bolzano','I\'m going to write a paper about it.'],['n','','In 1817, he actually did.']],
+ plain:[['Given','A curve drawn from a to b in one stroke, without the pen leaving the paper'],['If','One of its endpoints is above the x-axis and the other is below'],['Then','Somewhere between a and b, the curve steps exactly on the x-axis']],
+ steps:[
+  {say:'Drawn in one stroke, pen never leaves the paper',tex:r`f(x)${CONT}[a,b]`,why:'First, name the curve f. "Continuous" is the official word for "drawn in one stroke."'},
+  {say:'One endpoint above, one below',tex:r`f(a)\cdot f(b)<0`,why:'Above means positive, below means negative. A positive times a negative is always negative, so one expression covers both "who\'s on top" cases.'},
+  {say:'Somewhere between a and b',tex:r`\exists\,\xi\in(a,b)`,why:'Name that spot ξ. The round brackets mean it\'s in the middle, never one of the endpoints themselves.'},
+  {say:'The curve steps exactly on the x-axis',tex:r`f(\xi)=0`,why:'Standing on the x-axis means a height of 0.'}],
+ final:[r`\underbrace{f(x)${CONT}[a,b]}_{\text{✏️ one stroke}}\ ,\quad \underbrace{f(a)\cdot f(b)<0}_{\text{⚖️ one end up, one down}}`,
+        r`\Longrightarrow\quad \underbrace{\exists\,\xi\in(a,b)}_{\text{🔍 a point in the middle exists}}\ ,\quad \color{#e2601f}{\underbrace{f(\xi)=0}_{\text{🌊 right on the x-axis}}}`],
+ book:'Let f(x) be continuous on the closed interval [a,b], with f(a) and f(b) of opposite signs. Then there is at least one point ξ in the open interval (a,b) such that f(ξ)=0.',
+ fail:r`Let the pen leave the paper and you can teleport across the river. Take \(\frac{1}{x}\): underwater on the left, up in the sky on the right, broken apart at 0, and it never touches the x-axis at all.`,
+ use:'Proving that an equation "must have a solution." Forget what the solution is for now; once you know it exists, you can close in on it with the bisection method.'},
+
+{id:'ivt',icon:'🪜',name:'The Intermediate Value Theorem',short:'Intermediate Value',
+ who:['Bolzano again','Cauchy wrote it up again in 1821','The same discovery, published once more by raising the line. That\'s academia for you.'],
+ chat:[['k','Little Bolzano','Mom! I walked from the first floor to the third floor, so I must have passed the second floor!'],['a','Mom','Didn\'t you say last year that crossing a river gets your feet wet?'],['k','Little Bolzano','Last time the line was on the ground. This time I raised it to the second floor. It\'s a new theorem.'],['a','Mom','……']],
+ plain:[['Given','A curve drawn from a to b in one stroke'],['If','The start and end are at different heights, and you draw a horizontal dashed line at a height between them'],['Then','Somewhere between a and b, the curve touches that dashed line exactly']],
+ steps:[
+  {say:'Drawn in one stroke',tex:r`f(x)${CONT}[a,b]`,why:'Word for word the same opening as the Zero Theorem.'},
+  {say:'The start and end are at different heights',tex:r`f(a)=A,\quad f(b)=B,\quad A\neq B`,why:'Give each endpoint\'s height a name, so we can refer to them later.'},
+  {say:'The dashed line\'s height is between the start and end',tex:r`C\ \text{is between}\ A\ \text{and}\ B`,why:'Call the dashed line\'s height C. Even textbooks don\'t bother turning this into symbols, since we don\'t know whether A or B is bigger.'},
+  {say:'Somewhere in the middle, the curve touches the dashed line',tex:r`\exists\,\xi\in(a,b),\quad f(\xi)=C`,why:'Touching the dashed line means the height is exactly C.'}],
+ final:[r`\underbrace{f(x)${CONT}[a,b]}_{\text{✏️ one stroke}}\ ,\quad \underbrace{f(a)=A,\ f(b)=B,\ A\neq B}_{\text{📍 ends at different heights}}`,
+        r`\underbrace{C\ \text{is between}\ A\ \text{and}\ B}_{\text{🪜 dashed line between the ends}}\quad\Longrightarrow\quad \exists\,\xi\in(a,b),\ \ \color{#e2601f}{\underbrace{f(\xi)=C}_{\text{🎯 curve meets the line}}}`],
+ book:'Let f(x) be continuous on the closed interval [a,b], with f(a)=A, f(b)=B and A≠B. Then for any number C between A and B, there is at least one point ξ in the open interval (a,b) such that f(ξ)=C.',
+ fail:'If the line breaks, it can jump right over the dashed line, like a broken elevator teleporting from the first floor to the third. Also, set C to 0 and it turns back into the Zero Theorem: the two theorems are the same obvious statement said twice.',
+ use:'If your temperature rises from 36°C to 38°C, there was a moment when it was exactly 37°C. Anything that changes continuously can\'t skip the values in between.'},
+
+{id:'ext',icon:'🏔️',name:'The Extreme Value Theorem',short:'Extreme Value',
+ who:['Weierstrass','Karl Weierstrass, 1815–1897','Spent four years of university absorbed in fencing and beer and left without a degree, taught high school for over a decade, then became the "father of modern analysis." Rigorous to an infuriating degree.'],
+ chat:[['k','Little Weierstrass','Teacher! This stretch of mountain road must have one highest point and one lowest point!'],['a','Teacher','You mean mountains have peaks?'],['k','Little Weierstrass','Yes. But the road can\'t be broken, and the two ends of the road have to count too.'],['a','Teacher','This kid is going to be trouble.']],
+ plain:[['Given','A curve drawn from a to b in one stroke, with both endpoints included'],['Then','There\'s a highest point somewhere on it'],['Then','There\'s also a lowest point']],
+ steps:[
+  {say:'Drawn in one stroke, both endpoints included',tex:r`f(x)${CONT}[a,b]`,why:'The square brackets are the star here: both ends must count.'},
+  {say:'A lowest point and a highest point can be found',tex:r`\exists\,\xi_1,\ \xi_2\in[a,b]`,why:'Call the lowest point ξ₁ and the highest ξ₂. Square brackets this time, because the highest point can be an endpoint.'},
+  {say:'Highest point: no position you pick is higher than it',tex:r`\forall\,x\in[a,b]:\quad f(x)\le f(\xi_2)`,why:'"Highest" in symbols means "nothing goes above it."'},
+  {say:'Same for the lowest point; combine the two',tex:r`f(\xi_1)\le f(x)\le f(\xi_2)`,why:'Every height is squeezed between the lowest and the highest.'}],
+ final:[r`\underbrace{f(x)${CONT}[a,b]}_{\text{✏️ one stroke, ends count}}\quad\Longrightarrow\quad \underbrace{\exists\,\xi_1,\ \xi_2\in[a,b]}_{\text{🔍 two points can be found}}`,
+        r`\underbrace{\forall\,x\in[a,b]}_{\text{🎲 any position}}:\quad \underbrace{f(\xi_1)}_{\text{🕳️ lowest height}}\le f(x)\le \color{#e2601f}{\underbrace{f(\xi_2)}_{\text{🏔️ highest height}}}`],
+ book:'A function continuous on the closed interval [a,b] attains both its maximum and its minimum on that interval.',
+ fail:r`Leave out the endpoints and things go wrong. Take the line \(y=x\) on just (0,1): you say the highest is at 0.99, I say 0.999 is higher, and no champion can ever be crowned.`,
+ use:'Before you go hunting for the maximum profit or minimum cost, check first that "a best answer really exists," so you don\'t search for nothing.'},
+
+{id:'sq',icon:'🥪',name:'The Squeeze Theorem',short:'Squeeze',
+ who:['Archimedes','c. 287–212 BC','The one who shouted "Eureka!" in the bathtub. He trapped a circle between polygons inside and outside it, and squeezed out pi.'],
+ chat:[['k','Little Archimedes','Mom! The top slice and the bottom slice of bread are pinched together at the edge, so the ham in the middle has nowhere else to go!'],['a','Mom','Don\'t play with your food.'],['n','','In Italy it\'s called the "two carabinieri theorem": if two police officers march a thief into the station, the thief ends up at the station too.']],
+ plain:[['Given','Three curves near x₀, with the middle one always caught between the top and bottom ones'],['If','As you approach x₀, the top and bottom curves both close in on the same height A'],['Then','The middle curve has no choice but to close in on A too']],
+ steps:[
+  {say:'The middle curve is always caught between the top and bottom ones',tex:r`g(x)\le f(x)\le h(x)`,why:'The bottom slice of bread is g, the filling is f, the top slice is h.'},
+  {say:'As you approach x₀, the bottom curve closes in on height A',tex:r`\lim_{x\to x_0} g(x)=A`,why:'The small x→x₀ under lim reads "as x approaches x₀."'},
+  {say:'The top curve closes in on the same height A',tex:r`\lim_{x\to x_0} h(x)=A`,why:'The two slices of bread close at the same spot.'},
+  {say:'The middle curve can only close in on A',tex:r`\lim_{x\to x_0} f(x)=A`,why:'The filling has nowhere else to go.'}],
+ final:[r`\underbrace{g(x)\le f(x)\le h(x)}_{\text{🥪 filling between two slices}}\ ,\quad \underbrace{\lim_{x\to x_0} g(x)=\lim_{x\to x_0} h(x)=A}_{\text{🤏 slices close at the same spot}}`,
+        r`\Longrightarrow\quad \color{#e2601f}{\underbrace{\lim_{x\to x_0} f(x)=A}_{\text{🥓 so the filling goes there too}}}`],
+ book:'If g(x)≤f(x)≤h(x) in some punctured neighborhood of x₀, and the limits of g(x) and h(x) as x→x₀ both equal A, then the limit of f(x) as x→x₀ exists and equals A.',
+ fail:'If the two slices don\'t close (they head toward different heights), the filling has room to wander and can go wherever it likes.',
+ use:r`Taming limits you can't compute directly: trap them between two things that are easy to compute. The classic example is \(\frac{\sin x}{x}\) approaching 1 as x approaches 0.`},
+
+{id:'mono',icon:'🎈',name:'The Monotone Convergence Theorem',short:'Monotone',
+ who:['No single namesake','19th century','Credit usually goes to Weierstrass and the generation around him who sorted out what real numbers actually are.'],
+ chat:[['k','Little kid','Dad! The balloon only floats up, never down, but the room has a ceiling, so it has to stop at some height eventually!'],['a','Dad','Right. On the ceiling.'],['k','Little kid','Not necessarily. It could stop a little below the ceiling. I\'m only promising that it stops.'],['a','Dad','……You\'re pretty rigorous.']],
+ plain:[['Given','A row of points, one after another, going on forever'],['If','Each one is never lower than the one before'],['If','There\'s a ceiling overhead that none of them can go past'],['Then','The row of points must eventually crowd toward one definite height']],
+ steps:[
+  {say:'A row of points, one after another',tex:r`x_1,\ x_2,\ x_3,\ \cdots,\ x_n,\ \cdots`,why:'The height of the nth point is called xₙ. A row of numbers like this is officially called a sequence.'},
+  {say:'Each one is never lower than the one before',tex:r`x_n\le x_{n+1}`,why:'This is called "monotonically increasing": it only goes up, never down.'},
+  {say:'There\'s a ceiling overhead nobody can pass',tex:r`x_n\le M`,why:'The ceiling\'s height is M. This is called "bounded above."'},
+  {say:'Eventually crowds toward a definite height',tex:r`\lim_{n\to\infty} x_n\ \text{exists}`,why:'n→∞ reads "keeps going forever." Note that it only says the limit "exists," not that it equals M.'}],
+ final:[r`\underbrace{x_n\le x_{n+1}}_{\text{🎈 only goes up}}\ ,\quad \underbrace{x_n\le M}_{\text{🏠 a ceiling overhead}}`,
+        r`\Longrightarrow\quad \color{#e2601f}{\underbrace{\lim_{n\to\infty} x_n\ \text{exists}}_{\text{🤏 settles at some height}}}`],
+ book:'Every bounded monotone sequence has a limit.',
+ fail:'No ceiling: 1, 2, 3, 4… it just flies away. Not only going up: 1, −1, 1, −1… it bounces back and forth and never settles. Drop either condition and it fails.',
+ use:r`Proving that \(\left(1+\frac{1}{n}\right)^{n}\) eventually settles on a number. That number is e: what compound interest becomes when you push it to the limit.`},
+
+{id:'fer',icon:'🛹',name:'Fermat\'s Lemma',short:'Fermat',
+ who:['Fermat','Pierre de Fermat, 1601–1665','By day, a judge in Toulouse, France; math was just his hobby, yet he\'s called the "prince of amateurs." He liked writing things in book margins like "I have a marvelous proof, but this margin is too narrow to contain it."'],
+ chat:[['k','Little Fermat','Dad! When you stand on top of the hill, the ground under your feet is flat!'],['a','Dad','If it\'s still sloping, you haven\'t reached the top.'],['k','Little Fermat','I have a marvelous proof of this, but the hilltop is too narrow to contain it.']],
+ plain:[['Given','A smooth curve with no sharp corners'],['If','Position x₀ is a local hilltop (or valley bottom)'],['Then','The slope of the curve at x₀ is 0, meaning it\'s flat']],
+ steps:[
+  {say:'The curve is smooth, with no sharp corners',tex:r`f(x)\ \text{is differentiable at}\ x_0`,why:'"Differentiable" means "you can measure a slope here." You can\'t on a sharp corner.'},
+  {say:'x₀ is a local hilltop',tex:r`f(x)\le f(x_0)\quad(x\ \text{near}\ x_0)`,why:'Nothing nearby is higher. For a valley bottom, swap ≤ for ≥.'},
+  {say:'The slope of the curve at x₀',tex:r`f'(x_0)`,why:'The little tick at the top right of f is the symbol for slope.'},
+  {say:'The slope is 0, meaning it\'s flat',tex:r`f'(x_0)=0`,why:'Put a skateboard there and it won\'t roll away.'}],
+ final:[r`\underbrace{f(x)\ \text{is differentiable at}\ x_0}_{\text{🧈 smooth here, no corner}}\ ,\quad \underbrace{f(x)\le f(x_0)}_{\text{🏔️ nothing nearby is higher}}`,
+        r`\Longrightarrow\quad \color{#e2601f}{\underbrace{f'(x_0)=0}_{\text{🛹 a skateboard sits flat}}}`],
+ book:'Let f(x) be defined in some neighborhood of x₀ and differentiable at x₀. If f(x)≤f(x₀) (or f(x)≥f(x₀)) for every x in that neighborhood, then f′(x₀)=0.',
+ fail:r`Pointy tops don't count: the bottom of \(|x|\) is a sharp corner with no measurable slope. And it doesn't work in reverse: flat doesn't mean hilltop. At 0, \(x^3\) has only a small flat ledge halfway up the slope.`,
+ use:'When finding maximum profit or minimum cost, the step "set the derivative equal to 0" gets its confidence from this lemma.'},
+
+{id:'rol',icon:'🎢',name:'Rolle\'s Theorem',short:'Rolle',
+ who:['Rolle','Michel Rolle, 1652–1719','A self-taught Frenchman. He publicly called calculus "a collection of ingenious fallacies," and his name ended up printed in calculus textbooks forever.'],
+ chat:[['k','Little Rolle','Mom! I threw a ball and it came back down to the same height, so there must have been a moment in between when it was neither rising nor falling!'],['a','Mom','You mean the highest point.'],['k','Little Rolle','By the way, I think calculus is a load of nonsense.'],['n','','The calculus textbook: Noted. We\'ve put your name in bold.']],
+ plain:[['Given','A curve drawn from a to b in one stroke'],['Given','No sharp corners in the middle'],['If','The start and end are at the same height'],['Then','Somewhere in the middle, there\'s at least one flat spot']],
+ steps:[
+  {say:'Drawn in one stroke',tex:r`f(x)${CONT}[a,b]`,why:'An old friend by now.'},
+  {say:'No sharp corners in the middle',tex:r`f(x)${DIFF}(a,b)`,why:'Round brackets: we don\'t care whether the endpoints are smooth, only the middle.'},
+  {say:'The start and end are at the same height',tex:r`f(a)=f(b)`,why:'The two heights are equal.'},
+  {say:'Somewhere in the middle, there\'s a flat spot',tex:r`\exists\,\xi\in(a,b),\quad f'(\xi)=0`,why:'Flat means a slope of 0.'}],
+ final:[r`\underbrace{f(x)${CONT}[a,b]}_{\text{✏️ one stroke}}\ ,\quad \underbrace{${DIFF}(a,b)}_{\text{🧈 no corners inside}}\ ,\quad \underbrace{f(a)=f(b)}_{\text{⚖️ same height at both ends}}`,
+        r`\Longrightarrow\quad \exists\,\xi\in(a,b),\quad \color{#e2601f}{\underbrace{f'(\xi)=0}_{\text{🛹 flat right here}}}`],
+ book:'If f(x) is continuous on the closed interval [a,b], differentiable on the open interval (a,b), and f(a)=f(b), then there is at least one point ξ in (a,b) such that f′(ξ)=0.',
+ fail:r`A sharp corner breaks it: draw \(|x|\) from −1 to 1. Both ends are the same height, but in the middle there's only a pointy valley bottom, and not a single flat spot.`,
+ use:'It\'s the previous two obvious statements combined: the Extreme Value Theorem says there\'s a hilltop in the middle, and Fermat\'s Lemma says the hilltop is flat. It is also the stepping stone to Lagrange.'},
+
+{id:'lag',icon:'🚗',name:'Lagrange\'s Mean Value Theorem',short:'Lagrange',
+ who:['Lagrange','Joseph-Louis Lagrange, 1736–1813','Born in Turin, a professor at 19. He wrote a monumental book on mechanics and was quite proud that it contained not a single diagram.'],
+ chat:[['k','Little Lagrange','Dad! Your average speed on this stretch was 80, so at some moment the speedometer must have pointed exactly at 80!'],['a','Dad','……Hmm.'],['a','Traffic cop','Which is exactly why an average-speed camera can prove you were speeding. Ticket, please.']],
+ plain:[['Given','A curve drawn from a to b in one stroke, with no sharp corners in the middle'],['Do','Take a ruler and connect the start to the end'],['Then','Somewhere in the middle, the curve slopes exactly as steeply as that ruler']],
+ steps:[
+  {say:'Drawn in one stroke, no sharp corners in the middle',tex:r`f(x)${CONT}[a,b],\ \ ${DIFF}(a,b)`,why:'The same as Rolle\'s first two conditions, just without requiring both ends at the same height.'},
+  {say:'How steep the ruler is',tex:r`\frac{f(b)-f(a)}{b-a}`,why:'Slope = how much it rose ÷ how far it went. When driving, that\'s your average speed for the whole trip.'},
+  {say:'The slope of the curve at some spot',tex:r`f'(\xi)`,why:'When driving, that\'s the speedometer reading at one instant.'},
+  {say:'The two are equally steep',tex:r`f'(\xi)=\frac{f(b)-f(a)}{b-a}`,why:'Put an equals sign between them. Done.'}],
+ final:[r`\underbrace{f(x)${CONT}[a,b]}_{\text{✏️ one stroke}}\ ,\quad \underbrace{${DIFF}(a,b)}_{\text{🧈 no corners inside}}\quad\Longrightarrow\quad \exists\,\xi\in(a,b)`,
+        r`\color{#e2601f}{\underbrace{f'(\xi)}_{\text{🚗 speed at one instant}}}=\underbrace{\frac{\overbrace{f(b)-f(a)}^{\text{⛰️ total rise}}}{\underbrace{b-a}_{\text{👣 total distance}}}}_{\text{📏 average speed for the trip}}`],
+ book:'If f(x) is continuous on the closed interval [a,b] and differentiable on the open interval (a,b), then there is at least one point ξ in (a,b) such that f(b)−f(a)=f′(ξ)(b−a).',
+ fail:'It\'s just as afraid of sharp corners. Also, lay the ruler flat, meaning both ends at the same height, and the right side becomes 0: it shrinks back into Rolle\'s Theorem. Rolle is Lagrange viewed with your head tilted.',
+ use:'The math behind average-speed cameras. It also lets you infer "the rate of change at some instant" from "the average rate of change."'},
+
+{id:'cau',icon:'🏎️',name:'Cauchy\'s Mean Value Theorem',short:'Cauchy',
+ who:['Cauchy','Augustin-Louis Cauchy, 1789–1857','Wrote around eight hundred papers in his lifetime, so many that the French Academy of Sciences\' journal set a rule that no paper could exceed four pages, largely to rein him in.'],
+ chat:[['k','Little Cauchy','Teacher! The purple car traveled twice as far as the green car over the whole trip, so at some moment, the purple car must have been going exactly twice as fast as the green one!'],['a','Teacher','Lagrange said almost the same thing last year.'],['k','Little Cauchy','He had one car. I have two.'],['n','','Then he handed in another eight hundred papers.']],
+ plain:[['Given','Two curves, f and g, both drawn from a to b in one stroke, both with no sharp corners in the middle'],['If','Car g never stops during the whole trip'],['Then','At some moment, the ratio of the two cars\' speeds equals the ratio of their total distances']],
+ steps:[
+  {say:'Both curves drawn in one stroke, no sharp corners',tex:r`f(x),\ g(x)${CONT}[a,b],\ \ ${DIFF}(a,b)`,why:'Treat the horizontal axis as time and height as distance traveled, and the two curves become the trip logs of two cars.'},
+  {say:'Car g never stops during the whole trip',tex:r`g'(x)\neq 0`,why:'g\'s speed is about to go in a denominator, and a denominator can\'t be 0.'},
+  {say:'The ratio of the two cars\' total distances',tex:r`\frac{f(b)-f(a)}{g(b)-g(a)}`,why:'How far the purple car went ÷ how far the green car went.'},
+  {say:'At some moment, the ratio of their speeds equals it',tex:r`\frac{f'(\xi)}{g'(\xi)}=\frac{f(b)-f(a)}{g(b)-g(a)}`,why:'Notice it\'s the same ξ on top and bottom: two speedometers read at the same moment.'}],
+ final:[r`\underbrace{f(x),\ g(x)${CONT}[a,b],\ ${DIFF}(a,b)}_{\text{🛣️ both cars drive normally: no teleporting, no sharp turns}}\ ,\quad \underbrace{g'(x)\neq 0}_{\text{🚦 green car never stops}}`,
+        r`\Longrightarrow\quad \exists\,\xi\in(a,b),\quad \color{#e2601f}{\underbrace{\frac{f'(\xi)}{g'(\xi)}}_{\text{⏱️ speed ratio at one moment}}}=\underbrace{\frac{f(b)-f(a)}{g(b)-g(a)}}_{\text{🏁 distance ratio for the trip}}`],
+ book:'If f(x) and g(x) are continuous on the closed interval [a,b], differentiable on the open interval (a,b), and g′(x)≠0 for every x in (a,b), then there is at least one point ξ in (a,b) such that [f(b)−f(a)]/[g(b)−g(a)] = f′(ξ)/g′(ξ).',
+ fail:r`Make the green car drive at a steady speed, that is, \(g(x)=x\), and every denominator just becomes "how far it went": it shrinks back into Lagrange. Lagrange is Cauchy with only one car.`,
+ use:'The hidden hero behind L\'Hôpital\'s rule. Whenever you knock out a limit problem with L\'Hôpital, this theorem is doing the work behind the scenes.'},
+];
+
+/* ---------- drawing tools ---------- */
+const NS='http://www.w3.org/2000/svg',A=1.5,B=8.5;
+const X=x=>60+x*56,Y=y=>150-y*30,R=(a,b)=>a+Math.random()*(b-a);
+const cl=y=>Math.max(-4.6,Math.min(4.6,y));
+const dv=(f,x)=>(f(x+1e-4)-f(x-1e-4))/2e-4;
+const wave=()=>{const t=[0,1,2].map(()=>[R(.5,1.2),R(.35,1.2),R(0,6.3)]);return x=>t.reduce((s,[a,w,p])=>s+a*Math.sin(w*x+p),0);};
+const lerp=(y0,y1)=>x=>y0+(y1-y0)*(x-A)/(B-A);
+function roots(h){const o=[],N=700;let px=A+1e-3,py=h(px);for(let i=1;i<=N;i++){const x=A+(B-A)*i/N-(i===N?1e-3:0),y=h(x);if(py*y<0)o.push(px-py*(x-px)/(y-py));px=x;py=y;}return o;}
+function fits(f){for(let x=0;x<=10;x+=.1)if(Math.abs(f(x))>4.2)return false;return true;}
+function pick(make,ok){for(let i=0;i<200;i++){const v=make();if(ok(v))return v;}return make();}
+
+function pen(svg){
+  const g=svg.querySelector('g');g.textContent='';
+  const rc=window.rough?rough.svg(svg):null;
+  const tint=(n,c,op)=>{n.querySelectorAll('path').forEach(p=>{p.style.stroke='var('+c+')';p.style.fill='none';});if(op)n.style.opacity=op;g.appendChild(n);};
+  const raw=(tag,at,c,txt)=>{const e=document.createElementNS(NS,tag);for(const k in at)e.setAttribute(k,at[k]);if(c)e.style[tag==='line'||tag==='polyline'?'stroke':'fill']='var('+c+')';if(txt!=null)e.textContent=txt;g.appendChild(e);return e;};
+  const P={
+    sline(x1,y1,x2,y2,c,w,dash){
+      if(rc){const o={strokeWidth:w,roughness:.7,bowing:.5};if(dash)o.strokeLineDash=dash;tint(rc.line(x1,y1,x2,y2,o),c);}
+      else raw('line',{x1,y1,x2,y2,'stroke-width':w,'stroke-dasharray':dash?dash.join(' '):'','stroke-linecap':'round'},c);},
+    line(x1,y1,x2,y2,c,w,dash){P.sline(X(x1),Y(y1),X(x2),Y(y2),c,w,dash);},
+    path(f,x0,x1,c,w,op){const pts=[];for(let x=x0;x<=x1+1e-9;x+=.25)pts.push([X(x),Y(cl(f(x)))]);
+      if(rc)tint(rc.curve(pts,{strokeWidth:w,roughness:.45,bowing:0}),c,op);
+      else{const e=raw('polyline',{points:pts.map(p=>p.join(',')).join(' '),fill:'none','stroke-width':w,'stroke-linejoin':'round','stroke-linecap':'round'},c);if(op)e.style.opacity=op;}},
+    curve(f,c){c=c||'--curve';P.path(f,0,A,c,1.4,.4);P.path(f,B,10,c,1.4,.4);P.path(f,A,B,c,2.6);},
+    axis(){P.sline(40,Y(0),640,Y(0),'--ink2',1.2);P.text(640,Y(0)-8,'x-axis','end');},
+    hl(y,x0,x1,c){P.line(x0,y,x1,y,c,1.6,[7,6]);},
+    vl(x,lab){P.sline(X(x),22,X(x),272,'--muted',1,[4,5]);if(lab)P.text(X(x),294,lab,'middle');},
+    dot(x,y,c,rad){const e=raw('circle',{cx:X(x),cy:Y(y),r:rad||5.5,'stroke-width':2},c);e.style.stroke='var(--card)';},
+    seg(x,y,m,c){const h=.8;P.line(x-h,y-m*h,x+h,y+m*h,c,3.4);},
+    text(x,y,s,anchor,c){raw('text',{x,y,'text-anchor':anchor||'start'},c||'--ink2',s);}
+  };
+  return P;
+}
+
+
+const DRAW={
+zero(P){const s=Math.random()<.5?1:-1;const f=pick(()=>{const g=wave(),L=lerp(g(A),g(B)),T=lerp(-2.2*s,2.2*s);return x=>.8*(g(x)-L(x))+T(x);},fits);
+  P.axis();P.vl(A,'a');P.vl(B,'b');P.curve(f);P.dot(A,f(A),'--ref');P.dot(B,f(B),'--ref');roots(f).forEach(t=>P.dot(t,0,'--hit',6.5));
+  return 'One end up, one end down. The orange dots are where the curve crosses the x-axis.';},
+ivt(P){const f=pick(()=>{const g=wave();return x=>1.15*g(x);},f=>fits(f)&&Math.abs(f(B)-f(A))>1.6);
+  const C=(f(A)+f(B))/2+R(-.25,.25)*(f(B)-f(A));
+  P.vl(A,'a');P.vl(B,'b');P.hl(C,0,10,'--ref');P.text(X(10)+4,Y(C)+5,'C','start','--ref');P.curve(f);P.dot(A,f(A),'--ref');P.dot(B,f(B),'--ref');roots(x=>f(x)-C).forEach(t=>P.dot(t,C,'--hit',6.5));
+  return 'The green dashed line sits at a height between the two ends, so the curve is bound to touch it.';},
+ext(P){const f=pick(()=>{const g=wave();return x=>1.15*g(x);},fits);let mx=A,mn=A;
+  for(let i=0;i<=700;i++){const x=A+(B-A)*i/700;if(f(x)>f(mx))mx=x;if(f(x)<f(mn))mn=x;}
+  P.vl(A,'a');P.vl(B,'b');P.hl(f(mx),A,B,'--hit');P.hl(f(mn),A,B,'--ref');P.curve(f);P.dot(mx,f(mx),'--hit',6.5);P.dot(mn,f(mn),'--ref',6.5);
+  P.text(X(mx),Y(f(mx))-12,'max','middle','--hit');P.text(X(mn),Y(f(mn))+24,'min','middle','--ref');
+  return 'The stretch from a to b always has a highest and a lowest point. Sometimes they sit right on an endpoint.';},
+sq(P){const L=R(-1,1.2),k=R(.45,.62),w=R(2,3.4),p=R(0,6.3),up=x=>L+k*Math.abs(x-5),lo=x=>L-k*Math.abs(x-5),mid=x=>L+k*Math.abs(x-5)*Math.sin(w*x+p)*.9;
+  P.vl(5,'x₀');P.line(0,up(0),5,L,'--ref',2);P.line(5,L,10,up(10),'--ref',2);P.line(0,lo(0),5,L,'--ref',2);P.line(5,L,10,lo(10),'--ref',2);
+  P.path(mid,0,10,'--curve',2.4);P.dot(5,L,'--hit',6.5);P.text(X(10)-6,Y(up(10))-8,'h','end','--ref');P.text(X(10)-6,Y(lo(10))+20,'g','end','--ref');P.text(X(5)+12,Y(L)+5,'A','start','--hit');
+  return 'When the top and bottom slices close in, the purple filling can only go to the orange dot.';},
+mono(P){const M=R(1.2,3),stop=Math.random()<.5?M:M-R(.5,1.1);let a=R(-3.6,-2.2);
+  P.hl(M,0,10,'--ref');P.text(X(10),Y(M)-9,'ceiling M','end','--ref');
+  if(stop<M){P.hl(stop,0,10,'--hit');P.text(X(10),Y(stop)+20,'settles here','end','--hit');}
+  for(let n=0;n<24;n++){P.dot(.4+n*.4,a,'--curve',4.5);a+=(stop-a)*R(.12,.3);}
+  return stop<M?'Only goes up, with a ceiling overhead. This time it settled a little below the ceiling.':'Only goes up, with a ceiling overhead, so it has to crowd toward some height.';},
+fer(P){const f=pick(()=>{const g=wave();return x=>1.15*g(x);},f=>fits(f)&&roots(x=>dv(f,x)).length>0);
+  P.vl(A,'a');P.vl(B,'b');P.curve(f);roots(x=>dv(f,x)).forEach(t=>{P.seg(t,f(t),0,'--hit');P.dot(t,f(t),'--hit');});
+  return 'On every hilltop and valley bottom, the orange skateboard sits flat.';},
+rol(P){const c=R(-1,1);const f=pick(()=>{const g=wave(),L=lerp(g(A),g(B));return x=>g(x)-L(x)+c;},fits);
+  P.vl(A,'a');P.vl(B,'b');P.hl(c,A,B,'--ref');P.curve(f);P.dot(A,c,'--ref');P.dot(B,c,'--ref');roots(x=>dv(f,x)).forEach(t=>{P.seg(t,f(t),0,'--hit');P.dot(t,f(t),'--hit');});
+  return 'Start and end at the same height, so there\'s always a flat spot in the middle.';},
+lag(P){const f=pick(()=>{const g=wave(),k=R(-.35,.35);return x=>1.1*g(x)+k*(x-5);},fits),m=(f(B)-f(A))/(B-A);
+  P.vl(A,'a');P.vl(B,'b');P.curve(f);P.line(A,f(A),B,f(B),'--ref',1.8);P.dot(A,f(A),'--ref');P.dot(B,f(B),'--ref');roots(x=>dv(f,x)-m).forEach(t=>{P.seg(t,f(t),m,'--hit');P.dot(t,f(t),'--hit');});
+  return 'The green ruler is the average speed for the whole trip. The little orange skateboards slope exactly the same way.';},
+cau(P){let F,H,Q,rs;for(let i=0;i<50;i++){const p1=R(0,6.3),p2=R(0,6.3),a1=R(.15,.45),a2=R(.15,.4);
+    F=x=>-3.2+.7*x+a1*Math.sin(1.2*x+p1);H=x=>-3.9+.55*x+a2*Math.sin(1.1*x+p2);Q=(F(B)-F(A))/(H(B)-H(A));rs=roots(x=>dv(F,x)-Q*dv(H,x));if(rs.length)break;}
+  P.vl(A,'a');P.vl(B,'b');P.curve(F,'--curve');P.curve(H,'--ref');
+  rs.forEach(t=>{P.vl(t,'ξ');P.seg(t,F(t),dv(F,t),'--hit');P.seg(t,H(t),dv(H,t),'--hit');P.dot(t,F(t),'--hit');P.dot(t,H(t),'--hit');});
+  P.text(X(10)-4,Y(F(10))-10,'purple car f','end','--curve');P.text(X(10)-4,Y(H(10))+22,'green car g','end','--ref');
+  return 'The ratio of total distances is '+Q.toFixed(2)+'. At moment ξ, the ratio of the two skateboards\' slopes is also '+Q.toFixed(2)+'.';}
+};
+
+/* ---------- build the page ---------- */
+const h=(tag,cls,html)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;};
+const tex=(s,cls)=>{const d=h('div','tex'+(cls?' '+cls:''));d.textContent='\\['+s+'\\]';return d;};
+const gl=document.getElementById('gloss');
+GLOSS.forEach(([s,m])=>{const d=h('div');d.append(h('dt','',s),h('dd','',m));gl.append(d);});
+const nav=document.getElementById('nav'),list=document.getElementById('list');
+
+THEOREMS.forEach((t,i)=>{
+  const a=h('a','',t.icon+' '+t.short);a.href='#'+t.id;
+  a.addEventListener('click',e=>{e.preventDefault();document.getElementById(t.id).scrollIntoView();});nav.append(a);
+
+  const s=h('section','card thm');s.id=t.id;
+  const hd=h('header');hd.append(h('span','no','Obvious statement #'+(i+1)),h('h2','',t.icon+' '+t.name));s.append(hd);
+  s.append(h('p','who','<b>🧑‍🔬 '+t.who[0]+'</b>　'+t.who[1]+'<br>'+t.who[2]));
+
+  const b1=h('div');b1.append(h('h3','','🎭 The big discovery'));const chat=h('div','chat');
+  t.chat.forEach(([side,name,line])=>chat.append(h('p',side,(name?'<i>'+name+'</i>':'')+line)));b1.append(chat);s.append(b1);
+
+  const b2=h('div');b2.append(h('h3','','🎲 Test this obvious statement yourself'));
+  const lab=h('div','lab','<svg viewBox="0 0 680 305" role="img" aria-label="Random illustration of '+t.name+'"><g></g></svg>');
+  const bar=h('div','labbar'),cap=h('span'),btn=h('button','','🎲 Draw a new curve');btn.type='button';bar.append(cap,btn);b2.append(lab,bar);s.append(b2);
+  let n=0;const go=()=>{n++;const msg=DRAW[t.id](pen(lab.firstChild));cap.innerHTML=msg+'<small>Curves drawn: '+n+'. Times the theorem failed: 0.</small>';};
+  btn.addEventListener('click',go);go();
+
+  const b3=h('div');b3.append(h('h3','','📜 Dressed up, but still in plain words'));const pl=h('div','plain');
+  t.plain.forEach(([tag,txt])=>pl.append(h('p',tag==='Then'?'so':'','<b>'+tag+'</b><span>'+txt+'</span>')));b3.append(pl);s.append(b3);
+
+  const b4=h('div');b4.append(h('h3','','🔧 Swap in symbols, one line at a time'));const ol=h('ol','steps');
+  t.steps.forEach(st=>{const li=h('li');li.append(h('p','say','<q>'+st.say+'</q>'),h('p','arrow','⬇️ into symbols'),tex(st.tex),h('p','why',st.why));ol.append(li);});b4.append(ol);s.append(b4);
+
+  const b5=h('div');b5.append(h('h3','','🎓 Final form, every part labeled'));const fin=h('div','final');
+  t.final.forEach(f=>fin.append(tex(f)));b5.append(fin,h('p','book','📖 <b>The textbook version:</b> '+t.book));s.append(b5);
+
+  const nt=h('div','notes');nt.append(h('div','','<b>⚠️ When the obvious breaks</b>'+t.fail),h('div','','<b>💡 What this obvious statement is good for</b>'+t.use));s.append(nt);
+  list.append(s);
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js"></script>
+</body>
+</html>
